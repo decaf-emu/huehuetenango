@@ -1,0 +1,24 @@
+package: github.com/decaf-emu/huehuetenango
+import:
+- package: github.com/asdine/storm
+  version: ^0.7.0
+  subpackages:
+  - q
+- package: github.com/blevesearch/bleve
+  version: ^0.5.0
+- package: github.com/labstack/echo
+  repo: git@github.com:labstack/echo
+  vcs: git
+  subpackages:
+  - middleware
+- package: github.com/labstack/gommon
+  version: ^0.2.0
+  subpackages:
+  - log
+- package: github.com/mailru/easyjson
+  subpackages:
+  - jlexer
+  - jwriter
+- package: github.com/oklog/ulid
+  version: ^0.3.0
+- package: github.com/phayes/permbits

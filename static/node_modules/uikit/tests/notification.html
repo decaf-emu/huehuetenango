@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Notification - UIkit tests</title>
+        <script src="../node_modules/jquery/dist/jquery.js"></script>
+        <script src="js/test.js"></script>
+    </head>
+
+    <body>
+
+        <div class="uk-container">
+
+            <h1>Notification</h1>
+
+            <div class="uk-child-width-1-2@m" uk-grid>
+                <div>
+
+                    <p class="uk-notification-message">
+                        <a href="#" class="uk-notification-close" uk-close></a>
+                        Message
+                    </p>
+
+                    <p class="uk-notification-message uk-notification-message-primary">
+                        <a href="#" class="uk-notification-close" uk-close></a>
+                        Primary message
+                    </p>
+
+                    <p class="uk-notification-message uk-notification-message-success">
+                        <a href="#" class="uk-notification-close" uk-close></a>
+                        Success message
+                    </p>
+
+                    <p class="uk-notification-message uk-notification-message-warning">
+                        <a href="#" class="uk-notification-close" uk-close></a>
+                        Warning message
+                    </p>
+
+                    <p class="uk-notification-message uk-notification-message-danger">
+                        <a href="#" class="uk-notification-close" uk-close></a>
+                        Danger message
+                    </p>
+
+                </div>
+                <div>
+
+                    <p uk-margin>
+                        <button class="uk-button uk-button-default" type="button" data-message="Message" data-pos="top-left">Top Left</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Message" data-pos="top-center">Top Center</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Message" data-pos="top-right">Top Right</button>
+                    </p>
+
+                    <p uk-margin>
+                        <button class="uk-button uk-button-default" type="button" data-message="Message" data-pos="bottom-left">Bottom Left</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Message" data-pos="bottom-center">Bottom Center</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Message" data-pos="bottom-right">Bottom Right</button>
+                    </p>
+
+                    <h2>Styles</h2>
+
+                    <p uk-margin>
+                        <button class="uk-button uk-button-default" type="button" data-message="Primary message" data-status="primary">Primary</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Success message" data-status="success">Success</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Warning message" data-status="warning">Warning</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Danger message" data-status="danger">Danger</button>
+                    </p>
+
+                    <h2>Specials</h2>
+
+                    <p uk-margin>
+                        <button class="uk-button uk-button-default" type="button" data-message="<span uk-icon='icon: check'></span> Message with an icon">With icon</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="<a href='#new-location'>Message with a link</a>">With link</button>
+                        <button class="uk-button uk-button-default" type="button" data-message="Message without timeout" data-timeout="0">No Timeout</button>
+                        <a id="close-all" class="uk-button uk-button-default">Close All</a>
+                    </p>
+
+                </div>
+            </div>
+
+            <h2>Javascript Options</h2>
+
+            <div class="uk-overflow-auto">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Value</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>message</code></td>
+                            <td>string</td>
+                            <td>false</td>
+                            <td>Notification message to show.</td>
+                        </tr>
+                        <tr>
+                            <td><code>status</code></td>
+                            <td>string</td>
+                            <td>null</td>
+                            <td>Notification status color.</td>
+                        </tr>
+                        <tr>
+                            <td><code>timeout</code></td>
+                            <td>integer</td>
+                            <td>5000</td>
+                            <td>Visibility duration before a notification disappears.</td>
+                        </tr>
+                        <tr>
+                            <td><code>group</code></td>
+                            <td>string</td>
+                            <td>null</td>
+                            <td>Useful if you want to close all notifications in a specific group.</td>
+                        </tr>
+                        <tr>
+                            <td><code>pos</code></td>
+                            <td>string</td>
+                            <td>top-center</td>
+                            <td>Notification display position.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <script>
+
+            jQuery('button').on('click', function () {
+                UIkit.notification($(this).data());
+            });
+
+            jQuery('#close-all').on('click', function () {
+                UIkit.notification.closeAll();
+            });
+
+        </script>
+    </body>
+</html>
