@@ -1,6 +1,6 @@
 language: go
 go:
-  - release
+  - master
 
 before_install:
   - . $HOME/.nvm/nvm.sh
