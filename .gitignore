@@ -21,8 +21,9 @@
 huehuetenango.db
 *.bleve
 
-# Binary
+# Binaries
 cmd/huehuetenango/huehuetenango
+/huehuetenango
 
 # Static dist
 /static/dist/

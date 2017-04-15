@@ -1,0 +1,14 @@
+language: go
+go:
+  - release
+
+before_install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+
+install:
+  - npm install --global yarn
+
+script:
+  - make
