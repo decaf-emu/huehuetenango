@@ -10,7 +10,7 @@ before_install:
   - export PATH=$HOME/.yarn/bin:$PATH
 
 install:
-  - npm rebuild node-sass --force
+  - cd static && npm rebuild node-sass --force
 
 script:
   - make
