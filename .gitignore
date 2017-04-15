@@ -23,3 +23,6 @@ huehuetenango.db
 
 # Binary
 cmd/huehuetenango/huehuetenango
+
+# Static dist
+/static/dist/
