@@ -16,27 +16,8 @@ type apiImport struct {
 }
 
 func (a *api) ListImports(c echo.Context) error {
-	hexID := c.Param("titleID")
-	if len(hexID) != 16 {
-		return c.NoContent(http.StatusNotFound)
-	}
-	title, err := a.repository.FindTitleByHexID(hexID)
-	if err != nil {
-		return err
-	}
-	if title == nil {
-		return c.NoContent(http.StatusNotFound)
-	}
-
-	rplID := c.Param("rplID")
-	if rplID == "" {
-		return c.NoContent(http.StatusNotFound)
-	}
-	rpl, err := a.repository.FindRPL(models.RPLID(rplID))
-	if err != nil {
-		return err
-	}
-	if rpl == nil || rpl.TitleID != title.ID {
+	rpl, ok := c.Get("rpl").(*models.RPL)
+	if !ok {
 		return c.NoContent(http.StatusNotFound)
 	}
 

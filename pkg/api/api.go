@@ -24,6 +24,9 @@ type API interface {
 	ListImports(c echo.Context) error
 
 	Search(c echo.Context) error
+
+	TitleRequestMiddleware(next echo.HandlerFunc) echo.HandlerFunc
+	RPLRequestMiddleware(next echo.HandlerFunc) echo.HandlerFunc
 }
 
 type api struct {

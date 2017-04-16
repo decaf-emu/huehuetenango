@@ -8,15 +8,8 @@ import (
 )
 
 func (a *api) ListRPLs(c echo.Context) error {
-	hexID := c.Param("titleID")
-	if len(hexID) != 16 {
-		return c.NoContent(http.StatusNotFound)
-	}
-	title, err := a.repository.FindTitleByHexID(hexID)
-	if err != nil {
-		return err
-	}
-	if title == nil {
+	title, ok := c.Get("title").(*models.Title)
+	if !ok {
 		return c.NoContent(http.StatusNotFound)
 	}
 
@@ -28,27 +21,8 @@ func (a *api) ListRPLs(c echo.Context) error {
 }
 
 func (a *api) GetRPL(c echo.Context) error {
-	hexID := c.Param("titleID")
-	if len(hexID) != 16 {
-		return c.NoContent(http.StatusNotFound)
-	}
-	title, err := a.repository.FindTitleByHexID(hexID)
-	if err != nil {
-		return err
-	}
-	if title == nil {
-		return c.NoContent(http.StatusNotFound)
-	}
-
-	rplID := c.Param("rplID")
-	if rplID == "" {
-		return c.NoContent(http.StatusNotFound)
-	}
-	rpl, err := a.repository.FindRPL(models.RPLID(rplID))
-	if err != nil {
-		return err
-	}
-	if rpl == nil || rpl.TitleID != title.ID {
+	rpl, ok := c.Get("rpl").(*models.RPL)
+	if !ok {
 		return c.NoContent(http.StatusNotFound)
 	}
 	return c.JSON(http.StatusOK, rpl)
