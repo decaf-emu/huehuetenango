@@ -1,8 +1,9 @@
-const { resolve } = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+/* eslint-env node */
+import { resolve } from 'path';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import webpack from 'webpack';
+import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 const isProduction = () => process.env.NODE_ENV === 'production';
 
@@ -100,4 +101,4 @@ if (isProduction()) {
   config.plugins.push(new webpack.NamedModulesPlugin());
 }
 
-module.exports = config;
+export default config;
