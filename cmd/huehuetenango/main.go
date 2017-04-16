@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/decaf-emu/huehuetenango/pkg/api"
@@ -17,6 +19,12 @@ func main() {
 	searchPath := flag.String("search_db_path", "search.bleve", "")
 	flag.Parse()
 
+	if _, err := os.Stat(filepath.Dir(*databasePath)); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Dir(*databasePath), 0700); err != nil {
+			panic(err)
+		}
+	}
+
 	repository, err := repository.NewStormRepository(*databasePath)
 	if err != nil {
 		panic(err)
@@ -26,6 +34,12 @@ func main() {
 			panic(err)
 		}
 	}()
+
+	if _, err = os.Stat(filepath.Dir(*searchPath)); os.IsNotExist(err) {
+		if err = os.MkdirAll(filepath.Dir(*searchPath), 0700); err != nil {
+			panic(err)
+		}
+	}
 
 	index, err := search.NewBleveIndex(*searchPath)
 	if err != nil {
