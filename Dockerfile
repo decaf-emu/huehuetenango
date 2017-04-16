@@ -4,13 +4,13 @@ FROM golang:1.8
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ENV OUTPUT_DIR /opt/huehuetenango
-ENV DATA_DIR /data
+ENV DATA_DIR /data/huehuetenango
 
 # create the huehuetenango user
 RUN mkdir -p $OUTPUT_DIR && \
   mkdir -p $DATA_DIR && \
   groupadd -r huehuetenango && \
-  useradd -r -u 1000 -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
+  useradd -r -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
   chown -R huehuetenango:huehuetenango $OUTPUT_DIR $DATA_DIR
 
 # create and switch to the huehuetenango user
