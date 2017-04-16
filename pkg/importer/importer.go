@@ -2,6 +2,8 @@ package importer
 
 import (
 	"crypto/rand"
+	"path/filepath"
+	"strings"
 
 	"github.com/decaf-emu/huehuetenango/pkg/importer/schema"
 	"github.com/decaf-emu/huehuetenango/pkg/models"
@@ -353,23 +355,36 @@ func (i *repositoryImporter) updateImportSources() error {
 			for _, rplImport := range imports {
 				var sourceID models.RPLID
 				var sourceTitleID models.TitleID
-				lookupSignature := string(rplImport.SourceName) + "_" + rplImport.Name
+				sourceName := string(rplImport.SourceName)
 
-				if rplImport.Type == models.DataObject {
-					if match, exists := titleDataMap[lookupSignature]; exists {
-						sourceID = match.RPLID
-						sourceTitleID = match.TitleID
-					} else if match, exists := systemDataMap[lookupSignature]; exists {
-						sourceID = match.RPLID
-						sourceTitleID = match.TitleID
-					}
-				} else if rplImport.Type == models.FunctionObject {
-					if match, exists := titleFunctionMap[lookupSignature]; exists {
-						sourceID = match.RPLID
-						sourceTitleID = match.TitleID
-					} else if match, exists := systemFunctionMap[lookupSignature]; exists {
-						sourceID = match.RPLID
-						sourceTitleID = match.TitleID
+				lookupSignatures := make([]string, 1)
+				lookupSignatures[0] = sourceName + "_" + rplImport.Name
+
+				// most import source names don't contain the .rpl extension
+				// but some do, in which case we create another lookup signature
+				// without the extension
+				baseSourceName := strings.TrimSuffix(sourceName, filepath.Ext(sourceName))
+				if baseSourceName != sourceName {
+					lookupSignatures = append(lookupSignatures, baseSourceName+"_"+rplImport.Name)
+				}
+
+				for _, lookupSignature := range lookupSignatures {
+					if rplImport.Type == models.DataObject {
+						if match, exists := titleDataMap[lookupSignature]; exists {
+							sourceID = match.RPLID
+							sourceTitleID = match.TitleID
+						} else if match, exists := systemDataMap[lookupSignature]; exists {
+							sourceID = match.RPLID
+							sourceTitleID = match.TitleID
+						}
+					} else if rplImport.Type == models.FunctionObject {
+						if match, exists := titleFunctionMap[lookupSignature]; exists {
+							sourceID = match.RPLID
+							sourceTitleID = match.TitleID
+						} else if match, exists := systemFunctionMap[lookupSignature]; exists {
+							sourceID = match.RPLID
+							sourceTitleID = match.TitleID
+						}
 					}
 				}
 
