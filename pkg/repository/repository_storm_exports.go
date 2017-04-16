@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"github.com/decaf-emu/huehuetenango/pkg/models"
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
+	"github.com/decaf-emu/huehuetenango/pkg/models"
 )
 
 func (r *stormRepository) StoreExport(value *models.Export) error {
