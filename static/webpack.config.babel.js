@@ -1,30 +1,38 @@
 const { resolve } = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const isDevelopmentMode = !(require('yargs').argv.p || false);
+const isProduction = () => process.env.NODE_ENV === 'production';
 
-module.exports = (options = {}) => ({
+const config = {
   entry: {
     vendor: './src/vendor',
     index: './src/main.js',
   },
   output: {
     path: resolve(__dirname, 'dist'),
-    filename: options.dev ? '[name].js' : '[name].js?[hash]',
+    filename: isProduction() ? '[name].js?[hash]' : '[name].js',
     chunkFilename: '[id].js?[chunkhash]',
     publicPath: '/',
   },
+  devServer: {
+    host: '127.0.0.1',
+    port: 8081,
+    historyApiFallback: true,
+  },
+  devtool: !isProduction() ? 'inline-source-map' : undefined,
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        use: ['vue-loader'],
+        test: /\.js$/,
+        exclude: /node_modules(?!\/(vuikit))/,
+        loader: 'babel-loader',
       },
       {
-        test: /\.js$/,
-        use: ['babel-loader'],
+        test: /\.vue$/,
+        use: 'vue-loader',
       },
       {
         test: /\.html$/,
@@ -53,17 +61,6 @@ module.exports = (options = {}) => ({
         }),
       },
       {
-        test: /favicon\.png$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]?[hash]',
-            },
-          },
-        ],
-      },
-      {
         test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
         exclude: /favicon\.png$/,
         use: [
@@ -86,13 +83,21 @@ module.exports = (options = {}) => ({
     }),
     new ExtractTextPlugin('styles.css'),
     new webpack.DefinePlugin({
-      __DEBUG__: JSON.stringify(isDevelopmentMode),
+      __DEBUG__: JSON.stringify(!isProduction()),
     }),
   ],
-  devServer: {
-    host: '127.0.0.1',
-    port: 8010,
-    historyApiFallback: true,
-  },
-  devtool: options.dev ? '#eval-source-map' : undefined,
-});
+};
+
+if (isProduction()) {
+  config.plugins.push(
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
+    new UglifyJSPlugin(),
+  );
+} else {
+  config.plugins.push(new webpack.NamedModulesPlugin());
+}
+
+module.exports = config;

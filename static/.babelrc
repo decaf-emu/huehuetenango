@@ -1,3 +1,7 @@
 {
-  "presets": ["es2015", "stage-2"]
+  "presets": ["./.babel-preset-es2015.js", "stage-2"],
+   "plugins": [
+     "transform-runtime",
+     "syntax-trailing-function-commas"
+   ]
 }
