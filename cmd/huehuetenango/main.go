@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/decaf-emu/huehuetenango/pkg/api"
 	"github.com/decaf-emu/huehuetenango/pkg/repository"
@@ -80,5 +83,21 @@ func main() {
 	e.GET("/api/titles/:titleID/rpls/:rplID/exports", api.RPLRequestMiddleware(api.ListExports))
 	e.POST("/api/search", api.Search)
 
-	e.Logger.Fatal(e.Start(*httpAddr))
+	go func() {
+		if err := e.Start(*httpAddr); err != nil {
+			e.Logger.Info("Shutting down")
+		}
+	}()
+
+	// wait for the interrupt signal
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+
+	// shutdown gracefully
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := e.Shutdown(ctx); err != nil {
+		e.Logger.Fatal(err)
+	}
 }
