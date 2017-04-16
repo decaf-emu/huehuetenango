@@ -3,9 +3,6 @@ FROM golang:1.8
 # switch the shell used by RUN from sh to bash
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# create and switch to the huehuetenango user
-VOLUME /data
-
 ENV OUTPUT_DIR /opt/huehuetenango
 ENV DATA_DIR /data
 
@@ -13,8 +10,11 @@ ENV DATA_DIR /data
 RUN mkdir -p $OUTPUT_DIR && \
   mkdir -p $DATA_DIR && \
   groupadd -r huehuetenango && \
-  useradd -r -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
+  useradd -r -u 1000 -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
   chown -R huehuetenango:huehuetenango $OUTPUT_DIR $DATA_DIR
+
+# create and switch to the huehuetenango user
+VOLUME /data
 
 ENV HOME /root
 ENV GOPATH $HOME/go
