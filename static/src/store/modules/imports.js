@@ -10,7 +10,7 @@ const getters = {
 };
 
 const actions = {
-  listExports({ commit }, { titleId, rplId }) {
+  listImports({ commit }, { titleId, rplId }) {
     commit(types.LIST_IMPORTS_LOADING);
 
     imports.getImports(
