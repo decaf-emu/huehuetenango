@@ -1,5 +1,5 @@
-hash: 70edddf38417991acd5a3ee39f6b82a8d1e42971d83f8fbd1ff013f8c529af93
-updated: 2017-04-17T17:02:58.749983839+01:00
+hash: 512d8abbadebe6ca01d86af1c90038420c2274e14141804650c6d470b0572b9a
+updated: 2017-04-17T22:23:41.740962124+01:00
 imports:
 - name: github.com/asdine/storm
   version: e8518cc1200f320e508639491f9390b9c7c37970
@@ -63,6 +63,12 @@ imports:
   - proto
 - name: github.com/google/go-github
   version: 0e7db468186d70bb8568a7e7322ba7eba6f7dd5d
+  subpackages:
+  - github
+- name: github.com/google/go-querystring
+  version: 9235644dd9e52eeae6fa48efd539fdc351a0af53
+  subpackages:
+  - query
 - name: github.com/joho/godotenv
   version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
 - name: github.com/labstack/echo
