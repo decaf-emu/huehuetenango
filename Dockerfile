@@ -27,17 +27,19 @@ WORKDIR /root/go/src/github.com/decaf-emu/huehuetenango
 
 # install nvm
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-ENV NVM_DIR $HOME/.nvm
 
 # install node
+ENV NVM_DIR $HOME/.nvm
+ENV NPM_DIR $HOME/.npm
 RUN source $NVM_DIR/nvm.sh && \
   cd static && \
   nvm install
 
 # install yarn
+ENV YARN_DIR $HOME/.yarn
 RUN source $NVM_DIR/nvm.sh && \
   curl -o- -L https://yarnpkg.com/install.sh | bash
-ENV PATH $HOME/.yarn/bin:$GOPATH/bin:$PATH
+ENV PATH $YARN_DIR/bin:$GOPATH/bin:$PATH
 
 # build huehuetenango
 RUN source $NVM_DIR/nvm.sh && \
@@ -55,8 +57,11 @@ RUN mkdir -p $OUTPUT_DIR && \
 # allow huehuetenango to use ports less than 1024
 RUN setcap 'cap_net_bind_service=+ep' $OUTPUT_DIR/huehuetenango
 
-# remove the project directory
-RUN rm -rf $PROJECT_DIR
+# clean the build related directories
+RUN rm -rf $GOPATH && \
+  rm -rf $NVM_DIR && \
+  rm -rf $YARN_DIR && \
+  rm -rf $NPM_DIR
 
 # install and configure supervisor
 RUN apt-get update && \
