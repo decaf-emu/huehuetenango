@@ -1,18 +1,8 @@
-import Vue from 'vue';
+import axios from 'axios';
 import { apiAddress } from './config';
 
 export default {
-  searchTitles(term, cb, errCb) {
-    const formData = new FormData();
-    formData.append('term', term);
-
-    return Vue.http.post(`${apiAddress}/api/search`, formData).then(
-      response => {
-        cb(response.body);
-      },
-      response => {
-        errCb(response.body);
-      },
-    );
+  searchTitles(term) {
+    return axios.post(`${apiAddress}/api/search`, { term });
   },
 };

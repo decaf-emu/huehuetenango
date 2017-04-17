@@ -1,17 +1,10 @@
-import Vue from 'vue';
+import axios from 'axios';
 import { apiAddress } from './config';
 
 export default {
-  getImports(titleHexID, rplId, cb, errCb) {
-    return Vue.http
-      .get(`${apiAddress}/api/titles/${titleHexID}/rpls/${rplId}/imports`)
-      .then(
-        response => {
-          cb(response.body);
-        },
-        response => {
-          errCb(response.body);
-        },
-      );
+  getImports(titleId, rplId) {
+    return axios.get(
+      `${apiAddress}/api/titles/${titleId}/rpls/${rplId}/imports`,
+    );
   },
 };

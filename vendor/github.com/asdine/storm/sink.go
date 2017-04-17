@@ -1,6 +1,7 @@
 package storm
 
 import (
+	"encoding/binary"
 	"reflect"
 
 	"github.com/asdine/storm/index"
@@ -29,9 +30,12 @@ type sorter struct {
 	rbTree  *rbt.Tree
 	orderBy string
 	reverse bool
+	counter int64
 }
 
 func (s *sorter) filter(snk sink, tree q.Matcher, bucket *bolt.Bucket, k, v []byte) (bool, error) {
+	s.counter++
+
 	rsnk, ok := snk.(reflectSink)
 	if !ok {
 		return snk.add(&item{
@@ -72,7 +76,13 @@ func (s *sorter) filter(snk sink, tree q.Matcher, bucket *bolt.Bucket, k, v []by
 			if err != nil {
 				return false, err
 			}
-			s.rbTree.Put(string(raw), &it)
+
+			key := make([]byte, len(raw)+8)
+			for i := 0; i < len(raw); i++ {
+				key[i] = raw[i]
+			}
+			binary.PutVarint(key[len(raw):], s.counter)
+			s.rbTree.Put(string(key), &it)
 			return false, nil
 		}
 
@@ -114,6 +124,7 @@ type sink interface {
 	bucketName() string
 	flush() error
 	add(*item) (bool, error)
+	readOnly() bool
 }
 
 type reflectSink interface {
@@ -211,6 +222,10 @@ func (l *listSink) flush() error {
 	return ErrNotFound
 }
 
+func (l *listSink) readOnly() bool {
+	return true
+}
+
 func newFirstSink(node Node, to interface{}) (*firstSink, error) {
 	ref := reflect.ValueOf(to)
 
@@ -256,6 +271,10 @@ func (f *firstSink) flush() error {
 	}
 
 	return nil
+}
+
+func (f *firstSink) readOnly() bool {
+	return true
 }
 
 func newDeleteSink(node Node, kind interface{}) (*deleteSink, error) {
@@ -332,6 +351,10 @@ func (d *deleteSink) flush() error {
 	return nil
 }
 
+func (d *deleteSink) readOnly() bool {
+	return false
+}
+
 func newCountSink(node Node, kind interface{}) (*countSink, error) {
 	ref := reflect.ValueOf(kind)
 
@@ -379,6 +402,10 @@ func (c *countSink) flush() error {
 	return nil
 }
 
+func (c *countSink) readOnly() bool {
+	return true
+}
+
 func newRawSink() *rawSink {
 	return &rawSink{
 		limit: -1,
@@ -424,4 +451,65 @@ func (r *rawSink) bucketName() string {
 
 func (r *rawSink) flush() error {
 	return nil
+}
+
+func (r *rawSink) readOnly() bool {
+	return true
+}
+
+func newEachSink(to interface{}) (*eachSink, error) {
+	ref := reflect.ValueOf(to)
+
+	if !ref.IsValid() || ref.Kind() != reflect.Ptr || ref.Elem().Kind() != reflect.Struct {
+		return nil, ErrStructPtrNeeded
+	}
+
+	return &eachSink{
+		ref: ref,
+	}, nil
+}
+
+type eachSink struct {
+	skip   int
+	limit  int
+	ref    reflect.Value
+	execFn func(interface{}) error
+}
+
+func (e *eachSink) elem() reflect.Value {
+	return reflect.New(reflect.Indirect(e.ref).Type())
+}
+
+func (e *eachSink) bucketName() string {
+	return reflect.Indirect(e.ref).Type().Name()
+}
+
+func (e *eachSink) add(i *item) (bool, error) {
+	if e.limit == 0 {
+		return true, nil
+	}
+
+	if e.skip > 0 {
+		e.skip--
+		return false, nil
+	}
+
+	if e.limit > 0 {
+		e.limit--
+	}
+
+	err := e.execFn(i.value.Interface())
+	if err != nil {
+		return false, err
+	}
+
+	return e.limit == 0, nil
+}
+
+func (e *eachSink) flush() error {
+	return nil
+}
+
+func (e *eachSink) readOnly() bool {
+	return true
 }

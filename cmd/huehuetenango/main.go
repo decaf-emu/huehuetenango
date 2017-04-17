@@ -2,25 +2,36 @@ package main
 
 import (
 	"context"
-	"flag"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strings"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
+	"golang.org/x/oauth2"
+
 	"github.com/decaf-emu/huehuetenango/pkg/api"
 	"github.com/decaf-emu/huehuetenango/pkg/repository"
 	"github.com/decaf-emu/huehuetenango/pkg/search"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/namsral/flag"
+	githuboauth "golang.org/x/oauth2/github"
 )
 
 func main() {
-	httpAddr := flag.String("http_addr", ":8080", "HTTP listen address")
-	databasePath := flag.String("db_path", "huehuetenango.db", "")
-	searchPath := flag.String("search_db_path", "search.bleve", "")
-	flag.Parse()
+	_ = godotenv.Load()
+
+	fs := flag.NewFlagSetWithEnvPrefix(os.Args[0], "HUEHUE", flag.ExitOnError)
+	httpAddr := fs.String("http_addr", ":8080", "HTTP listen address")
+	databasePath := fs.String("db_path", "huehuetenango.db", "")
+	searchPath := fs.String("search_db_path", "search.bleve", "")
+	githubClientID := fs.String("github_client_id", "", "")
+	githubClientSecret := fs.String("github_client_secret", "", "")
+	jwtSigningSecret := fs.String("jwt_signing_secret", "", "")
+	fs.Parse(os.Args[1:])
 
 	if _, err := os.Stat(filepath.Dir(*databasePath)); os.IsNotExist(err) {
 		if err := os.MkdirAll(filepath.Dir(*databasePath), 0700); err != nil {
@@ -54,7 +65,23 @@ func main() {
 		}
 	}()
 
+	a := api.NewAPI(repository, index, *jwtSigningSecret, &oauth2.Config{
+		ClientID:     *githubClientID,
+		ClientSecret: *githubClientSecret,
+		Scopes:       []string{"read:user", "read:org"},
+		Endpoint:     githuboauth.Endpoint,
+	})
+
 	e := echo.New()
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		log.WithFields(log.Fields{
+			"path": c.Path(),
+			"err":  err.Error(),
+		}).Error("Failed request")
+
+		e.DefaultHTTPErrorHandler(err, c)
+	}
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
@@ -73,15 +100,28 @@ func main() {
 		},
 	}))
 
-	api := api.NewAPI(repository, index)
-	e.POST("/api/import", api.Import)
-	e.GET("/api/titles", api.ListTitles)
-	e.GET("/api/titles/:titleID", api.TitleRequestMiddleware(api.GetTitle))
-	e.GET("/api/titles/:titleID/rpls", api.TitleRequestMiddleware(api.ListRPLs))
-	e.GET("/api/titles/:titleID/rpls/:rplID", api.RPLRequestMiddleware(api.GetRPL))
-	e.GET("/api/titles/:titleID/rpls/:rplID/imports", api.RPLRequestMiddleware(api.ListImports))
-	e.GET("/api/titles/:titleID/rpls/:rplID/exports", api.RPLRequestMiddleware(api.ListExports))
-	e.POST("/api/search", api.Search)
+	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		Claims:     &api.JWTClaims{},
+		SigningKey: []byte(*jwtSigningSecret),
+	})
+
+	e.POST("/api/import", a.Import)
+	e.POST("/api/search", a.Search)
+	e.GET("/api/titles", a.ListTitles)
+
+	titles := e.Group("/api/titles/:titleID")
+	titles.Use(a.TitleRequestMiddleware)
+	titles.GET("", a.GetTitle)
+	titles.GET("/rpls", a.ListRPLs)
+
+	rpls := titles.Group("/rpls/:rplID")
+	rpls.Use(a.RPLRequestMiddleware)
+	rpls.GET("", a.GetRPL)
+	rpls.GET("/imports", a.ListImports)
+	rpls.GET("/exports", a.ListExports)
+
+	e.GET("/api/auth", a.Login)
+	e.POST("/api/auth/callback", a.LoginCallback, jwtMiddleware)
 
 	go func() {
 		if err := e.Start(*httpAddr); err != nil {

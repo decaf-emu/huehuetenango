@@ -9,14 +9,22 @@ import (
 	"github.com/labstack/echo"
 )
 
+type searchRequest struct {
+	Term string `json:"term"`
+}
+
 func (a *api) Search(c echo.Context) error {
+	request := &searchRequest{}
+	if err := c.Bind(request); err != nil {
+		return err
+	}
+
 	results := make([]*models.Title, 0)
-	term := c.FormValue("term")
-	if strings.TrimSpace(term) == "" {
+	if strings.TrimSpace(request.Term) == "" {
 		return c.JSON(http.StatusOK, results)
 	}
 
-	resultIDs, err := a.index.Search(term)
+	resultIDs, err := a.index.Search(request.Term)
 	if err != nil {
 		return err
 	}

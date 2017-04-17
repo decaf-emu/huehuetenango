@@ -22,3 +22,13 @@ import:
 - package: github.com/oklog/ulid
   version: ^0.3.0
 - package: github.com/phayes/permbits
+- package: github.com/namsral/flag
+  version: ^1.7.4-pre
+- package: golang.org/x/oauth2
+  subpackages:
+  - github
+- package: github.com/joho/godotenv
+  version: ^1.1.0
+- package: github.com/Sirupsen/logrus
+  version: ^0.11.5
+- package: github.com/google/go-github

@@ -1,27 +1,11 @@
-import Vue from 'vue';
+import axios from 'axios';
 import { apiAddress } from './config';
 
 export default {
-  getTitleRpls(hexID, cb, errCb) {
-    return Vue.http.get(`${apiAddress}/api/titles/${hexID}/rpls`).then(
-      response => {
-        cb(response.body);
-      },
-      response => {
-        errCb(response.body);
-      },
-    );
+  getTitleRpls(titleId) {
+    return axios.get(`${apiAddress}/api/titles/${titleId}/rpls`);
   },
-  getRpl(titleHexID, id, cb, errCb) {
-    return Vue.http
-      .get(`${apiAddress}/api/titles/${titleHexID}/rpls/${id}`)
-      .then(
-        response => {
-          cb(response.body);
-        },
-        response => {
-          errCb(response.body);
-        },
-      );
+  getRpl(titleHexID, id) {
+    return axios.get(`${apiAddress}/api/titles/${titleHexID}/rpls/${id}`);
   },
 };

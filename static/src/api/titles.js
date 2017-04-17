@@ -1,40 +1,19 @@
-import Vue from 'vue';
+import axios from 'axios';
 import { apiAddress } from './config';
 
 export default {
-  getTitle(hexId, cb, errCb) {
-    return Vue.http.get(`${apiAddress}/api/titles/${hexId}`).then(
-      response => {
-        cb(response.body);
-      },
-      response => {
-        errCb(response.body);
-      },
-    );
+  getTitle(titleId) {
+    return axios.get(`${apiAddress}/api/titles/${titleId}`);
   },
 
-  listTitles(cb, errCb) {
-    return Vue.http.get(`${apiAddress}/api/titles`).then(
-      response => {
-        cb(response.body);
-      },
-      response => {
-        errCb(response.body);
-      },
-    );
+  listTitles() {
+    return axios.get(`${apiAddress}/api/titles`);
   },
 
-  importTitles(file, cb, errCb) {
+  importTitles(file) {
     const formData = new FormData();
     formData.append('file', file, file.name);
 
-    return Vue.http.post(`${apiAddress}/api/import`, formData).then(
-      response => {
-        cb(response.body);
-      },
-      response => {
-        errCb(response.body);
-      },
-    );
+    return axios.post(`${apiAddress}/api/import`, formData);
   },
 };

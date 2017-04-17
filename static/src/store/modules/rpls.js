@@ -12,24 +12,21 @@ const getters = {
 };
 
 const actions = {
-  getTitleRpls({ commit }, hexId) {
+  getTitleRpls({ commit }, titleId) {
     commit(types.TITLE_RPLS_LOADING);
 
-    rpls.getTitleRpls(
-      hexId,
-      results => commit(types.TITLE_RPLS_SUCCESS, { results }),
-      () => commit(types.TITLE_RPLS_FAILURE),
-    );
+    rpls
+      .getTitleRpls(titleId)
+      .then(({ data }) => commit(types.TITLE_RPLS_SUCCESS, { rpls: data }))
+      .catch(() => commit(types.TITLE_RPLS_FAILURE));
   },
   getRpl({ commit }, { titleId, rplId }) {
     commit(types.GET_RPL_LOADING);
 
-    rpls.getRpl(
-      titleId,
-      rplId,
-      results => commit(types.GET_RPL_SUCCESS, { results }),
-      () => commit(types.GET_RPL_FAILURE),
-    );
+    rpls
+      .getRpl(titleId, rplId)
+      .then(({ data }) => commit(types.GET_RPL_SUCCESS, { rpl: data }))
+      .catch(() => commit(types.GET_RPL_FAILURE));
   },
 };
 
@@ -37,8 +34,8 @@ const mutations = {
   [types.TITLE_RPLS_LOADING](state) {
     state.titleRpls = [];
   },
-  [types.TITLE_RPLS_SUCCESS](state, { results }) {
-    state.titleRpls = results.sort((a, b) => {
+  [types.TITLE_RPLS_SUCCESS](state, { rpls }) {
+    state.titleRpls = rpls.sort((a, b) => {
       if (a.IsRPX) {
         return -1;
       }
@@ -59,8 +56,8 @@ const mutations = {
   [types.GET_RPL_LOADING](state) {
     state.rpl = null;
   },
-  [types.GET_RPL_SUCCESS](state, { results }) {
-    state.rpl = results;
+  [types.GET_RPL_SUCCESS](state, { rpl }) {
+    state.rpl = rpl;
   },
 };
 

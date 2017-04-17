@@ -8,7 +8,7 @@ import (
 )
 
 func (a *api) RPLRequestMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return a.TitleRequestMiddleware(func(c echo.Context) error {
+	return func(c echo.Context) error {
 		title, ok := c.Get("title").(*models.Title)
 		if !ok {
 			return c.NoContent(http.StatusNotFound)
@@ -32,7 +32,7 @@ func (a *api) RPLRequestMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		c.Set("rpl", rpl)
 		return next(c)
-	})
+	}
 }
 
 func (a *api) ListRPLs(c echo.Context) error {

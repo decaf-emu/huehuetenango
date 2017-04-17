@@ -31,7 +31,7 @@ func (a *api) TitleRequestMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func (a *api) ListTitles(c echo.Context) error {
-	titles, err := a.repository.ListTitles(false)
+	titles, err := a.repository.ListTitles(true)
 	if err != nil {
 		return err
 	}

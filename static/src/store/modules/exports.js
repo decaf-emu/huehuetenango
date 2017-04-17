@@ -13,12 +13,10 @@ const actions = {
   listExports({ commit }, { titleId, rplId }) {
     commit(types.LIST_EXPORTS_LOADING);
 
-    exports.getExports(
-      titleId,
-      rplId,
-      results => commit(types.LIST_EXPORTS_SUCCESS, { results }),
-      () => commit(types.LIST_EXPORTS_FAILURE),
-    );
+    exports
+      .getExports(titleId, rplId)
+      .then(({ data }) => commit(types.LIST_EXPORTS_SUCCESS, { exports: data }))
+      .catch(() => commit(types.LIST_EXPORTS_FAILURE));
   },
 };
 
@@ -26,8 +24,8 @@ const mutations = {
   [types.LIST_EXPORTS_LOADING](state) {
     state.exports = [];
   },
-  [types.LIST_EXPORTS_SUCCESS](state, { results }) {
-    state.exports = results;
+  [types.LIST_EXPORTS_SUCCESS](state, { exports }) {
+    state.exports = exports;
   },
 };
 

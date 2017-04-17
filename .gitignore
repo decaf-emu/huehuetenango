@@ -26,3 +26,6 @@ cmd/huehuetenango/huehuetenango
 
 # Static dist
 /static/dist/
+
+# Environment files
+.env

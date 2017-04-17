@@ -19,20 +19,21 @@ const getters = {
 
 const actions = {
   getAllTitles({ commit }) {
-    titles.listTitles(
-      results => commit(types.ALL_TITLES_SUCCESS, { results }),
-      () => commit(types.ALL_TITLES_FAILURE),
-    );
+    titles
+      .listTitles()
+      .then(({ data }) => commit(types.ALL_TITLES_SUCCESS, { titles: data }))
+      .catch(() => commit(types.ALL_TITLES_FAILURE));
   },
-  getTitle({ commit }, hexId) {
+
+  getTitle({ commit }, titleId) {
     commit(types.GET_TITLE_LOADING);
 
-    titles.getTitle(
-      hexId,
-      results => commit(types.GET_TITLE_SUCCESS, { results }),
-      () => commit(types.GET_TITLE_FAILURE),
-    );
+    titles
+      .getTitle(titleId)
+      .then(({ data }) => commit(types.GET_TITLE_SUCCESS, { title: data }))
+      .catch(() => commit(types.GET_TITLE_FAILURE));
   },
+
   importTitles({ commit }, file) {
     commit(types.IMPORT_TITLES_LOADING);
 
@@ -45,8 +46,8 @@ const actions = {
 };
 
 const mutations = {
-  [types.ALL_TITLES_SUCCESS](state, { results }) {
-    state.all = results.sort((a, b) => {
+  [types.ALL_TITLES_SUCCESS](state, { titles }) {
+    state.all = titles.sort((a, b) => {
       const nameA = a.LongNameEnglish.toUpperCase();
       const nameB = b.LongNameEnglish.toUpperCase();
 
@@ -60,12 +61,14 @@ const mutations = {
       return 0;
     });
   },
+
   [types.GET_TITLE_LOADING](state) {
     state.title = null;
   },
-  [types.GET_TITLE_SUCCESS](state, { results }) {
-    state.title = results;
+  [types.GET_TITLE_SUCCESS](state, { title }) {
+    state.title = title;
   },
+
   [types.IMPORT_TITLES_LOADING](state) {
     state.importing = true;
     state.importSuccess = false;

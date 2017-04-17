@@ -4,9 +4,13 @@ import (
 	"github.com/decaf-emu/huehuetenango/pkg/repository"
 	"github.com/decaf-emu/huehuetenango/pkg/search"
 	"github.com/labstack/echo"
+	"golang.org/x/oauth2"
 )
 
 type API interface {
+	Login(c echo.Context) error
+	LoginCallback(c echo.Context) error
+
 	Import(c echo.Context) error
 
 	ListTitles(c echo.Context) error
@@ -25,13 +29,18 @@ type API interface {
 }
 
 type api struct {
-	repository repository.Repository
-	index      search.Index
+	repository       repository.Repository
+	index            search.Index
+	authConfig       *oauth2.Config
+	jwtSigningSecret string
 }
 
-func NewAPI(repository repository.Repository, index search.Index) API {
+func NewAPI(repository repository.Repository, index search.Index, jwtSigningSecret string,
+	authConfig *oauth2.Config) API {
 	return &api{
-		repository: repository,
-		index:      index,
+		repository:       repository,
+		index:            index,
+		jwtSigningSecret: jwtSigningSecret,
+		authConfig:       authConfig,
 	}
 }

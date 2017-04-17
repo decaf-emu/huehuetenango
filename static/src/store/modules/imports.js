@@ -13,12 +13,10 @@ const actions = {
   listImports({ commit }, { titleId, rplId }) {
     commit(types.LIST_IMPORTS_LOADING);
 
-    imports.getImports(
-      titleId,
-      rplId,
-      results => commit(types.LIST_IMPORTS_SUCCESS, { results }),
-      () => commit(types.LIST_IMPORTS_FAILURE),
-    );
+    imports
+      .getImports(titleId, rplId)
+      .then(({ data }) => commit(types.LIST_IMPORTS_SUCCESS, { imports: data }))
+      .catch(() => commit(types.LIST_IMPORTS_FAILURE));
   },
 };
 
@@ -26,8 +24,8 @@ const mutations = {
   [types.LIST_IMPORTS_LOADING](state) {
     state.imports = [];
   },
-  [types.LIST_IMPORTS_SUCCESS](state, { results }) {
-    state.imports = results;
+  [types.LIST_IMPORTS_SUCCESS](state, { imports }) {
+    state.imports = imports;
   },
 };
 
