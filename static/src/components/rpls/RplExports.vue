@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="uk-position-relative">
     <h3>Functions</h3>
     <div class="uk-overflow-auto">
       <table class="uk-table">
@@ -12,6 +12,7 @@
         </tr>
       </table>
     </div>
+
     <h3>Data</h3>
     <div class="uk-overflow-auto">
       <table class="uk-table">
@@ -23,6 +24,10 @@
           </td>
         </tr>
       </table>
+    </div>
+
+    <div v-if="loadingExports" class="uk-overlay uk-overlay-default uk-position-cover">
+      <div class="uk-position-center" uk-spinner></div>
     </div>
   </div>
 </template>
@@ -36,7 +41,7 @@ export default {
     this.listExports();
   },
   computed: {
-    ...mapGetters(['exports']),
+    ...mapGetters(['exports', 'loadingExports']),
   },
   methods: {
     listExports() {

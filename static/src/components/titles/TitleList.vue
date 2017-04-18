@@ -1,6 +1,6 @@
 <template>
-  <div class="uk-container uk-container-expand">
-    <table class="uk-table uk-table-hover" v-if="titles && titles.length > 0">
+  <div class="uk-container uk-container-expand uk-position-relative">
+    <table class="uk-table uk-table-hover" v-if="allTitles && allTitles.length > 0">
       <thead>
         <tr>
           <th class="uk-table-expand">Name</th>
@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="title in titles">
+        <tr v-for="title in allTitles">
           <td class="uk-table-link">
             <router-link :to="{ name: 'title', params: { titleId: title.HexID }}">
               {{ title.LongNameEnglish }}
@@ -24,6 +24,9 @@
         </tr>
       </tbody>
     </table>
+    <div v-if="loadingAllTitles" class="uk-overlay uk-overlay-default uk-position-cover">
+      <div class="uk-position-center" uk-spinner></div>
+    </div>
   </div>
 </template>
 
@@ -33,10 +36,16 @@ import { mapGetters } from 'vuex';
 export default {
   beforeMount() {
     this.$store.dispatch('getAllTitles');
+
+    this.$store.dispatch('clearTitle');
+    this.$store.dispatch('clearTitleRpls');
+    this.$store.dispatch('clearRpl');
+    this.$store.dispatch('clearImports');
+    this.$store.dispatch('clearExports');
   },
-  computed: mapGetters({
-    titles: 'allTitles',
-  }),
+  computed: {
+    ...mapGetters(['allTitles', 'loadingAllTitles']),
+  },
 };
 </script>
 

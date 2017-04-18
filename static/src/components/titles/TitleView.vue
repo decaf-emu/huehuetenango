@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-container uk-container-expand">
+  <div class="uk-container uk-container-expand uk-position-relative">
     <div class="uk-margin uk-margin-top uk-margin-bottom" uk-grid>
       <h1 v-if="title">{{ title.LongNameEnglish }}</h1>
     </div>
@@ -7,10 +7,17 @@
     <div uk-grid>
       <div class="uk-width-1-5">
         <RplList class="rpl-list" v-if="titleId" :titleId="titleId" :rpls="titleRpls" :type="type" />
+        <div v-if="loadingTitleRpls" class="uk-overlay uk-overlay-default uk-position-cover uk-position-z-index">
+          <div class="uk-position-center" uk-spinner></div>
+        </div>
       </div>
       <div class="uk-width-4-5">
         <RplView v-if="titleId && rplId" :titleId="titleId" :rplId="rplId" :type="type" />
       </div>
+    </div>
+
+    <div v-if="loadingTitle" class="uk-overlay uk-overlay-default uk-position-cover uk-position-z-index">
+      <div class="uk-position-center" uk-spinner></div>
     </div>
   </div>
 </template>
@@ -32,7 +39,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['title', 'titleRpls']),
+    ...mapGetters(['title', 'loadingTitle', 'titleRpls', 'loadingTitleRpls']),
   },
   watch: {
     titleId(titleId) {
@@ -40,7 +47,6 @@ export default {
         this.$store.dispatch('getTitle', titleId);
         this.$store.dispatch('getTitleRpls', titleId);
       }
-      2;
     },
     titleRpls(rpls) {
       const { titleId, rplId, type } = this;

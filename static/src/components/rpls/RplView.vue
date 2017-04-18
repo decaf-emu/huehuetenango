@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="uk-position-relative">
     <h2 v-if="rpl">{{ rpl.Name }}</h2>
     <ul uk-tab>
       <li>
@@ -12,6 +12,10 @@
 
     <RplExports v-if="type == 'exports'" :titleId="titleId" :rplId="rplId" />
     <RplImports v-if="type == 'imports'" :titleId="titleId" :rplId="rplId" />
+
+    <div v-if="loadingRpl" class="uk-overlay uk-overlay-default uk-position-cover">
+      <div class="uk-position-center" uk-spinner></div>
+    </div>
   </div>
 </template>
 
@@ -33,7 +37,7 @@ export default {
     this.validateType();
   },
   computed: {
-    ...mapGetters(['rpl']),
+    ...mapGetters(['rpl', 'loadingRpl']),
   },
   methods: {
     validateType() {

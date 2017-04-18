@@ -3,12 +3,17 @@ import rpls from '../../api/rpls';
 
 const state = {
   titleRpls: [],
+  loadingTitleRpls: false,
+
   rpl: null,
+  loadingRpl: false,
 };
 
 const getters = {
   titleRpls: state => state.titleRpls,
+  loadingTitleRpls: state => state.loadingTitleRpls,
   rpl: state => state.rpl,
+  loadingRpl: state => state.loadingRpl,
 };
 
 const actions = {
@@ -20,6 +25,11 @@ const actions = {
       .then(({ data }) => commit(types.TITLE_RPLS_SUCCESS, { rpls: data }))
       .catch(() => commit(types.TITLE_RPLS_FAILURE));
   },
+
+  clearTitleRpls({ commit }) {
+    commit(types.CLEAR_TITLE_RPLS);
+  },
+
   getRpl({ commit }, { titleId, rplId }) {
     commit(types.GET_RPL_LOADING);
 
@@ -28,11 +38,15 @@ const actions = {
       .then(({ data }) => commit(types.GET_RPL_SUCCESS, { rpl: data }))
       .catch(() => commit(types.GET_RPL_FAILURE));
   },
+
+  clearRpl({ commit }) {
+    commit(types.CLEAR_RPL);
+  },
 };
 
 const mutations = {
   [types.TITLE_RPLS_LOADING](state) {
-    state.titleRpls = [];
+    state.loadingTitleRpls = true;
   },
   [types.TITLE_RPLS_SUCCESS](state, { rpls }) {
     state.titleRpls = rpls.sort((a, b) => {
@@ -52,12 +66,32 @@ const mutations = {
 
       return 0;
     });
+
+    state.loadingTitleRpls = false;
   },
+  [types.TITLE_RPLS_FAILED](state) {
+    state.loadingTitleRpls = false;
+  },
+
+  [types.CLEAR_TITLE_RPLS](state) {
+    state.titleRpls = [];
+    state.loadingTitleRpls = false;
+  },
+
   [types.GET_RPL_LOADING](state) {
-    state.rpl = null;
+    state.loadingRpl = true;
   },
   [types.GET_RPL_SUCCESS](state, { rpl }) {
     state.rpl = rpl;
+    state.loadingRpl = false;
+  },
+  [types.GET_RPL_FAILED](state) {
+    state.loadingRpl = false;
+  },
+
+  [types.CLEAR_RPL](state) {
+    state.rpl = null;
+    state.loadingRpl = false;
   },
 };
 

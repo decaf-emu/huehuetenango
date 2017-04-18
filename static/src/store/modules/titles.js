@@ -2,8 +2,12 @@ import * as types from '../mutation-types';
 import titles from '../../api/titles';
 
 const state = {
-  title: null,
   all: [],
+  loadingAll: false,
+
+  title: null,
+  loadingTitle: false,
+
   importing: false,
   importSuccess: false,
   importFailed: false,
@@ -11,7 +15,11 @@ const state = {
 
 const getters = {
   allTitles: state => state.all,
+  loadingAllTitles: state => state.loadingAll,
+
   title: state => state.title,
+  loadingTitle: state => state.loadingTitle,
+
   importingTitles: state => state.importing,
   importTitlesSuccess: state => state.importSuccess,
   importTitlesFailed: state => state.importFailed,
@@ -19,6 +27,8 @@ const getters = {
 
 const actions = {
   getAllTitles({ commit }) {
+    commit(types.ALL_TITLES_LOADING);
+
     titles
       .listTitles()
       .then(({ data }) => commit(types.ALL_TITLES_SUCCESS, { titles: data }))
@@ -34,6 +44,10 @@ const actions = {
       .catch(() => commit(types.GET_TITLE_FAILURE));
   },
 
+  clearTitle({ commit }) {
+    commit(types.CLEAR_TITLE);
+  },
+
   importTitles({ commit }, file) {
     commit(types.IMPORT_TITLES_LOADING);
 
@@ -46,6 +60,9 @@ const actions = {
 };
 
 const mutations = {
+  [types.ALL_TITLES_LOADING](state) {
+    state.loadingAll = true;
+  },
   [types.ALL_TITLES_SUCCESS](state, { titles }) {
     state.all = titles.sort((a, b) => {
       const nameA = a.LongNameEnglish.toUpperCase();
@@ -60,13 +77,27 @@ const mutations = {
 
       return 0;
     });
+
+    state.loadingAll = false;
+  },
+  [types.ALL_TITLES_FAILED](state) {
+    state.loadingAll = false;
   },
 
   [types.GET_TITLE_LOADING](state) {
-    state.title = null;
+    state.loadingTitle = true;
   },
   [types.GET_TITLE_SUCCESS](state, { title }) {
     state.title = title;
+    state.loadingTitle = false;
+  },
+  [types.GET_TITLE_FAILED](state) {
+    state.loadingTitle = false;
+  },
+
+  [types.CLEAR_TITLE](state) {
+    state.title = null;
+    state.loadingTitle = false;
   },
 
   [types.IMPORT_TITLES_LOADING](state) {

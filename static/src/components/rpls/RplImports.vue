@@ -1,16 +1,21 @@
 <template>
-  <div>
+  <div class="uk-position-relative">
     <h3>Functions</h3>
     <div class="uk-overflow-auto">
       <table class="uk-table">
         <RplImportRow v-for="item in imports.functions" :item="item" :key="item.name" />
       </table>
     </div>
+
     <h3>Data</h3>
     <div class="uk-overflow-auto">
       <table class="uk-table">
         <RplImportRow v-for="item in imports.data" :item="item" :key="item.name" />
       </table>
+    </div>
+
+    <div v-if="loadingImports" class="uk-overlay uk-overlay-default uk-position-cover">
+      <div class="uk-position-center" uk-spinner></div>
     </div>
   </div>
 </template>
@@ -26,7 +31,7 @@ export default {
     this.listImports();
   },
   computed: {
-    ...mapGetters(['imports']),
+    ...mapGetters(['imports', 'loadingImports']),
   },
   methods: {
     listImports() {
