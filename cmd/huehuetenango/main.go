@@ -9,6 +9,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/nightlyone/lockfile"
 	"golang.org/x/oauth2"
 
 	"github.com/decaf-emu/huehuetenango/pkg/api"
@@ -33,35 +34,88 @@ func main() {
 	jwtSigningSecret := fs.String("jwt_signing_secret", "", "")
 	fs.Parse(os.Args[1:])
 
-	if _, err := os.Stat(filepath.Dir(*databasePath)); os.IsNotExist(err) {
-		if err := os.MkdirAll(filepath.Dir(*databasePath), 0700); err != nil {
-			panic(err)
+	databaseDir, err := filepath.Abs(filepath.Dir(*databasePath))
+	if err != nil {
+		log.WithFields(log.Fields{
+			"path": *databasePath,
+			"err":  err.Error(),
+		}).Fatal("failed to resolve absolute database directory")
+	}
+
+	if _, err = os.Stat(databaseDir); os.IsNotExist(err) {
+		if err = os.MkdirAll(databaseDir, 0700); err != nil {
+			log.WithFields(log.Fields{
+				"dir": databaseDir,
+				"err": err.Error(),
+			}).Fatal("failed to create database directory")
 		}
 	}
+
+	lockPath := filepath.Join(databaseDir, filepath.Base(*databasePath)+".lock")
+	lock, err := lockfile.New(lockPath)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"path": lockPath,
+			"err":  err.Error(),
+		}).Fatal("failed to create lock file")
+	}
+
+	for {
+		err = lock.TryLock()
+
+		if err == lockfile.ErrBusy || err == lockfile.ErrNotExist || err == lockfile.ErrInvalidPid {
+			time.Sleep(500 * time.Second)
+		} else if err != nil && err != lockfile.ErrDeadOwner {
+			log.WithFields(log.Fields{
+				"path": lockPath,
+				"err":  err.Error(),
+			}).Fatal("failed to obtain database file lock")
+		} else {
+			break
+		}
+	}
+
+	defer lock.Unlock()
 
 	repository, err := repository.NewStormRepository(*databasePath)
 	if err != nil {
-		panic(err)
+		log.WithFields(log.Fields{
+			"path": *databasePath,
+			"err":  err.Error(),
+		}).Fatal("failed to open repository")
 	}
 	defer func() {
 		if err = repository.Close(); err != nil {
-			panic(err)
+			log.WithFields(log.Fields{
+				"path": *databasePath,
+				"err":  err.Error(),
+			}).Fatal("failed to close repository")
 		}
 	}()
 
-	if _, err = os.Stat(filepath.Dir(*searchPath)); os.IsNotExist(err) {
-		if err = os.MkdirAll(filepath.Dir(*searchPath), 0700); err != nil {
-			panic(err)
+	searchDirectory := filepath.Dir(*searchPath)
+	if _, err = os.Stat(searchDirectory); os.IsNotExist(err) {
+		if err = os.MkdirAll(searchDirectory, 0700); err != nil {
+			log.WithFields(log.Fields{
+				"dir": searchDirectory,
+				"err": err.Error(),
+			}).Fatal("failed to create search directory")
 		}
 	}
 
 	index, err := search.NewBleveIndex(*searchPath)
 	if err != nil {
-		panic(err)
+		log.WithFields(log.Fields{
+			"path": *searchPath,
+			"err":  err.Error(),
+		}).Fatal("failed to open search index")
 	}
 	defer func() {
 		if err := index.Close(); err != nil {
-			panic(err)
+			log.WithFields(log.Fields{
+				"path": *searchPath,
+				"err":  err.Error(),
+			}).Fatal("failed to close search index")
 		}
 	}()
 
