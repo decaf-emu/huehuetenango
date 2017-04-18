@@ -1,5 +1,5 @@
-hash: 512d8abbadebe6ca01d86af1c90038420c2274e14141804650c6d470b0572b9a
-updated: 2017-04-17T22:23:41.740962124+01:00
+hash: a248be6d7cc36fc7904db50a60732bba4103575a73e65237110a6c1d82cd2161
+updated: 2017-04-18T21:37:32.82850232+01:00
 imports:
 - name: github.com/asdine/storm
   version: e8518cc1200f320e508639491f9390b9c7c37970
@@ -96,6 +96,8 @@ imports:
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/namsral/flag
   version: 71ceffbeb0ba60fccc853971bb3ed4d7d90bfd04
+- name: github.com/nightlyone/lockfile
+  version: 1d49c987357a327b5b03aa84cbddd582c328615d
 - name: github.com/oklog/ulid
   version: d311cb43c92434ec4072dfbbda3400741d0a6337
 - name: github.com/phayes/permbits
