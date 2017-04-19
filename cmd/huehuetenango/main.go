@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -185,7 +186,7 @@ func main() {
 
 	// wait for the interrupt signal
 	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
 	// shutdown gracefully
