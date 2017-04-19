@@ -40,7 +40,7 @@ export default {
       const { titleId, rplId, type } = this;
 
       if (titleId && rplId && type !== 'exports' && type !== 'imports') {
-        this.$router.push({
+        this.$router.replace({
           name: 'title',
           params: { titleId, rplId, type: 'exports' },
         });
