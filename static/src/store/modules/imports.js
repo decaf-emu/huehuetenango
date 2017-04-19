@@ -40,6 +40,7 @@ const mutations = {
 
   [types.CLEAR_IMPORTS](state) {
     state.imports = [];
+    state.loadingImports = false;
   },
 };
 

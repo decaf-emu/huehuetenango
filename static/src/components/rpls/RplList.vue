@@ -12,7 +12,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  props: ['titleId', 'rpls', 'type'],
+  props: ['titleId', 'rpls', 'type', 'loading'],
 };
 </script>
 

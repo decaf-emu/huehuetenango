@@ -1,6 +1,6 @@
 <template>
   <div class="uk-container uk-container-expand uk-position-relative">
-    <table class="uk-table uk-table-hover" v-if="allTitles && allTitles.length > 0">
+    <table class="uk-table uk-table-hover">
       <thead>
         <tr>
           <th class="uk-table-expand">Name</th>
@@ -24,9 +24,6 @@
         </tr>
       </tbody>
     </table>
-    <div v-if="loadingAllTitles" class="uk-overlay uk-overlay-default uk-position-cover">
-      <div class="uk-position-center" uk-spinner></div>
-    </div>
   </div>
 </template>
 

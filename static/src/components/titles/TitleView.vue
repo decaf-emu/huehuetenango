@@ -6,18 +6,11 @@
 
     <div uk-grid>
       <div class="uk-width-1-5">
-        <RplList class="rpl-list" v-if="titleId" :titleId="titleId" :rpls="titleRpls" :type="type" />
-        <div v-if="loadingTitleRpls" class="uk-overlay uk-overlay-default uk-position-cover uk-position-z-index">
-          <div class="uk-position-center" uk-spinner></div>
-        </div>
+        <RplList class="rpl-list" v-if="titleId" :loading="loadingTitleRpls" :titleId="titleId" :rpls="titleRpls" :type="type" />
       </div>
       <div class="uk-width-4-5">
         <RplView v-if="titleId && rplId" :titleId="titleId" :rplId="rplId" :type="type" />
       </div>
-    </div>
-
-    <div v-if="loadingTitle" class="uk-overlay uk-overlay-default uk-position-cover uk-position-z-index">
-      <div class="uk-position-center" uk-spinner></div>
     </div>
   </div>
 </template>

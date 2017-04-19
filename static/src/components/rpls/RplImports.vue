@@ -13,10 +13,6 @@
         <RplImportRow v-for="item in imports.data" :item="item" :key="item.name" />
       </table>
     </div>
-
-    <div v-if="loadingImports" class="uk-overlay uk-overlay-default uk-position-cover">
-      <div class="uk-position-center" uk-spinner></div>
-    </div>
   </div>
 </template>
 

@@ -18,6 +18,7 @@
 
 # Database files
 huehuetenango.db
+huehuetenango.db.lock
 *.bleve
 
 # Binaries
