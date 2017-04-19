@@ -28,17 +28,27 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   beforeMount() {
-    this.$store.dispatch('getAllTitles');
+    this.getAllTitles();
 
-    this.$store.dispatch('clearTitle');
-    this.$store.dispatch('clearTitleRpls');
-    this.$store.dispatch('clearRpl');
-    this.$store.dispatch('clearImports');
-    this.$store.dispatch('clearExports');
+    this.clearTitle();
+    this.clearTitleRpls();
+    this.clearRpl();
+    this.clearImports();
+    this.clearExports();
+  },
+  methods: {
+    ...mapActions([
+      'getAllTitles',
+      'clearTitle',
+      'clearTitleRpls',
+      'clearRpl',
+      'clearImports',
+      'clearExports',
+    ]),
   },
   computed: {
     ...mapGetters(['allTitles', 'loadingAllTitles']),

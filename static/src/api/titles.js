@@ -2,18 +2,18 @@ import axios from 'axios';
 import { apiAddress } from './config';
 
 export default {
-  getTitle(titleId) {
-    return axios.get(`${apiAddress}/api/titles/${titleId}`);
+  async getTitle(titleId) {
+    return await axios.get(`${apiAddress}/api/titles/${titleId}`);
   },
 
-  listTitles() {
-    return axios.get(`${apiAddress}/api/titles`);
+  async listTitles() {
+    return await axios.get(`${apiAddress}/api/titles`);
   },
 
-  importTitles(file) {
+  async importTitles(file) {
     const formData = new FormData();
     formData.append('file', file, file.name);
 
-    return axios.post(`${apiAddress}/api/import`, formData);
+    return await axios.post(`${apiAddress}/api/import`, formData);
   },
 };

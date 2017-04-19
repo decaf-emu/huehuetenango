@@ -5,17 +5,20 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import queryString from 'query-string';
 
 export default {
   beforeMount() {
     const { state, code } = queryString.parse(window.location.search);
-    this.$store.dispatch('processAuth', { state, code });
+    this.processAuth({ state, code });
   },
-  computed: mapGetters({
-    isLoggedIn: 'isLoggedIn',
-  }),
+  methods: {
+    ...mapActions(['processAuth']),
+  },
+  computed: {
+    ...mapGetters(['isLoggedIn']),
+  },
   watch: {
     isLoggedIn(isLoggedIn) {
       if (isLoggedIn) {

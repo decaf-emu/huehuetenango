@@ -2,11 +2,11 @@ import axios from 'axios';
 import { apiAddress } from './config';
 
 export default {
-  requestAuth() {
-    return axios.get(`${apiAddress}/api/auth`);
+  async requestAuth() {
+    return await axios.get(`${apiAddress}/api/auth`);
   },
 
-  processAuth(state, code) {
-    return axios.post(`${apiAddress}/api/auth/callback`, { state, code });
+  async processAuth(state, code) {
+    return await axios.post(`${apiAddress}/api/auth/callback`, { state, code });
   },
 };

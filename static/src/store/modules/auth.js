@@ -6,17 +6,15 @@ import auth from '../../api/auth';
 const jwtStorageKey = 'token';
 
 const decodeToken = function(token) {
-  let data = null;
-
-  if (token) {
-    try {
-      data = jwtDecode(token);
-    } catch (e) {
-      return null;
-    }
+  if (!token) {
+    return null;
   }
 
-  return data;
+  try {
+    return jwtDecode(token);
+  } catch (e) {
+    return null;
+  }
 };
 
 const store = {
@@ -24,6 +22,7 @@ const store = {
     authUrl: null,
     token: localStorage.getItem(jwtStorageKey),
   },
+
   getters: {
     isLoggedIn({ token }) {
       const data = decodeToken(token);
@@ -34,41 +33,49 @@ const store = {
 
       return false;
     },
+
     name({ token }) {
       const data = decodeToken(token);
       return data ? data.name : null;
     },
+
     avatarUrl({ token }) {
       const data = decodeToken(token);
       return data ? data.avatar_url : null;
     },
+
     authRedirectUrl: ({ authUrl }) => authUrl,
   },
+
   actions: {
-    requestAuth({ commit }) {
-      auth
-        .requestAuth()
-        .then(({ data }) => {
-          const { url, token } = data;
-          commit(types.REQUEST_AUTH_SUCCESS, { url, token });
-        })
-        .catch(() => commit(types.REQUEST_AUTH_FAILURE));
+    async requestAuth({ commit }) {
+      try {
+        const response = await auth.requestAuth();
+        const { url, token } = response.data;
+        commit(types.REQUEST_AUTH_SUCCESS, {
+          url,
+          token,
+        });
+      } catch (error) {
+        commit(types.REQUEST_AUTH_FAILURE, { error });
+      }
     },
 
-    processAuth({ commit }, { state, code }) {
-      auth
-        .processAuth(state, code)
-        .then(({ data }) => {
-          const { token } = data;
-          commit(types.PROCESS_AUTH_SUCCESS, { token });
-        })
-        .catch(() => commit(types.PROCESS_AUTH_FAILURE));
+    async processAuth({ commit }, { state, code }) {
+      try {
+        const response = await auth.processAuth(state, code);
+        const { token } = response.data;
+        commit(types.PROCESS_AUTH_SUCCESS, { token });
+      } catch (error) {
+        commit(types.PROCESS_AUTH_FAILURE, { error });
+      }
     },
 
     logout({ commit }) {
       commit(types.CLEAR_AUTH_TOKEN);
     },
   },
+
   mutations: {
     [types.REQUEST_AUTH_SUCCESS](state, { url, token }) {
       state.authUrl = url;
