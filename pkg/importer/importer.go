@@ -150,7 +150,6 @@ func (i *repositoryImporter) importRPL(title *models.Title, sourceRPL *schema.RP
 
 func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.RPL,
 	sourceExports *schema.Exports) error {
-
 	if sourceExports == nil {
 		existingExports, err := i.repository.ListExportsByRPL(rpl.ID)
 		if err != nil {
