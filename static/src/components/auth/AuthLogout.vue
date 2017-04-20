@@ -11,9 +11,11 @@ export default {
     ...mapGetters(['isLoggedIn']),
   },
 
-  watch: {
+  methods: {
     ...mapActions(['logout']),
+  },
 
+  watch: {
     isLoggedIn(isLoggedIn) {
       if (!isLoggedIn) {
         this.$router.push({ name: 'titles' });
