@@ -4,8 +4,6 @@ import auth from './modules/auth';
 import titles from './modules/titles';
 import search from './modules/search';
 import rpls from './modules/rpls';
-import exports from './modules/exports';
-import imports from './modules/imports';
 
 Vue.use(Vuex);
 
@@ -15,7 +13,5 @@ export default new Vuex.Store({
     titles,
     search,
     rpls,
-    exports,
-    imports,
   },
 });

@@ -36,14 +36,7 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'getAllTitles',
-      'clearTitle',
-      'clearTitleRpls',
-      'clearRpl',
-      'clearImports',
-      'clearExports',
-    ]),
+    ...mapActions(['getAllTitles', 'clearTitle', 'clearTitleRpls', 'clearRpl']),
   },
 
   head: {
@@ -58,8 +51,6 @@ export default {
     this.clearTitle();
     this.clearTitleRpls();
     this.clearRpl();
-    this.clearImports();
-    this.clearExports();
   },
 };
 </script>

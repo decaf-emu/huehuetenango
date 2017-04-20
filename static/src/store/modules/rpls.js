@@ -1,5 +1,7 @@
 import * as types from '../mutation-types';
 import rpls from '../../api/rpls';
+import imports from '../../api/imports';
+import exports from '../../api/exports';
 
 export default {
   state: {
@@ -7,13 +9,18 @@ export default {
     loadingTitleRpls: false,
 
     rpl: null,
+    imports: [],
+    exports: [],
     loadingRpl: false,
   },
 
   getters: {
     titleRpls: state => state.titleRpls,
     loadingTitleRpls: state => state.loadingTitleRpls,
+
     rpl: state => state.rpl,
+    imports: state => state.imports,
+    exports: state => state.exports,
     loadingRpl: state => state.loadingRpl,
   },
 
@@ -39,9 +46,20 @@ export default {
       commit(types.GET_RPL_LOADING);
 
       try {
-        const response = await rpls.getRpl(titleId, rplId);
+        const [
+          rplResponse,
+          importsResponse,
+          exportsResponse,
+        ] = await Promise.all([
+          rpls.getRpl(titleId, rplId),
+          imports.getImports(titleId, rplId),
+          exports.getExports(titleId, rplId),
+        ]);
+
         commit(types.GET_RPL_SUCCESS, {
-          rpl: response.data,
+          rpl: rplResponse.data,
+          imports: importsResponse.data,
+          exports: exportsResponse.data,
         });
       } catch (error) {
         commit(types.GET_RPL_FAILURE, { error });
@@ -93,8 +111,10 @@ export default {
       state.loadingRpl = true;
     },
 
-    [types.GET_RPL_SUCCESS](state, { rpl }) {
+    [types.GET_RPL_SUCCESS](state, { rpl, imports, exports }) {
       state.rpl = rpl;
+      state.imports = imports;
+      state.exports = exports;
       state.loadingRpl = false;
     },
 
@@ -104,6 +124,8 @@ export default {
 
     [types.CLEAR_RPL](state) {
       state.rpl = null;
+      state.imports = [];
+      state.exports = [];
       state.loadingRpl = false;
     },
   },

@@ -29,38 +29,11 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
-  props: ['titleId', 'rplId'],
-
   computed: {
-    ...mapGetters(['exports', 'loadingExports']),
-  },
-
-  methods: {
-    ...mapActions(['listExports']),
-
-    fetchExports() {
-      const { titleId, rplId } = this;
-
-      if (titleId && rplId) {
-        this.listExports({ titleId, rplId });
-      }
-    },
-  },
-
-  watch: {
-    rplId() {
-      this.fetchExports();
-    },
-    titleId() {
-      this.fetchExports();
-    },
-  },
-
-  beforeMount() {
-    this.fetchExports();
+    ...mapGetters(['exports']),
   },
 };
 </script>
