@@ -16,41 +16,91 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import RplList from '../rpls/RplList.vue';
 import RplView from '../rpls/RplView.vue';
 
 export default {
   components: { RplList, RplView },
   props: ['titleId', 'rplId', 'type'],
-  beforeMount() {
-    const { titleId } = this;
 
-    if (titleId) {
-      this.$store.dispatch('getTitle', titleId);
-      this.$store.dispatch('getTitleRpls', titleId);
-    }
-  },
   computed: {
-    ...mapGetters(['title', 'loadingTitle', 'titleRpls', 'loadingTitleRpls']),
+    ...mapGetters([
+      'title',
+      'rpl',
+      'loadingTitle',
+      'titleRpls',
+      'loadingTitleRpls',
+    ]),
   },
-  watch: {
-    titleId(titleId) {
-      if (titleId) {
-        this.$store.dispatch('getTitle', titleId);
-        this.$store.dispatch('getTitleRpls', titleId);
-      }
-    },
-    titleRpls(rpls) {
-      const { titleId, rplId, type } = this;
 
-      if (titleId && !rplId && rpls && rpls.length > 0) {
+  methods: {
+    ...mapActions(['getTitle', 'getTitleRpls']),
+
+    checkRpl() {
+      const { titleId, titleRpls } = this;
+      let { rplId } = this;
+
+      if (titleId && !rplId && titleRpls && titleRpls.length > 0) {
+        rplId = titleRpls[0].ID;
+
         this.$router.replace({
           name: 'title',
-          params: { titleId, rplId: rpls[0].ID, type },
+          params: { titleId, rplId, type: 'imports' },
         });
       }
     },
+
+    async fetchTitle() {
+      const { titleId } = this;
+
+      if (titleId) {
+        await Promise.all([this.getTitle(titleId), this.getTitleRpls(titleId)]);
+      }
+    },
+  },
+
+  watch: {
+    titleId() {
+      this.fetchTitle();
+    },
+
+    titleRpls() {
+      this.checkRpl();
+    },
+
+    title() {
+      this.$emit('updateHead');
+    },
+
+    rpl() {
+      this.$emit('updateHead');
+    },
+  },
+
+  head: {
+    title() {
+      let value;
+      const { title, rpl } = this;
+
+      if (title) {
+        const { ShortNameEnglish, LongNameEnglish } = title;
+
+        value = {
+          inner: ShortNameEnglish ? ShortNameEnglish : LongNameEnglish,
+        };
+
+        if (rpl && rpl.TitleID == title.ID) {
+          value.inner = `${rpl.Name} - ${value.inner}`;
+        }
+      }
+
+      return value;
+    },
+  },
+
+  beforeMount() {
+    this.fetchTitle();
   },
 };
 </script>

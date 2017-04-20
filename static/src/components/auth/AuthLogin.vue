@@ -5,16 +5,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import URI from 'urijs';
 
 export default {
-  beforeMount() {
-    this.$store.dispatch('requestAuth');
-  },
   computed: mapGetters({
     redirectUrl: 'authRedirectUrl',
   }),
+
+  methods: {
+    ...mapActions(['requestAuth']),
+  },
+
   watch: {
     redirectUrl(url) {
       const callbackRoute = this.$router.resolve({ name: 'login-callback' });
@@ -23,6 +25,10 @@ export default {
       const authUri = URI(url).addQuery('redirect_uri', callbackUri);
       window.location = authUri.href();
     },
+  },
+
+  beforeMount() {
+    this.requestAuth();
   },
 };
 </script>

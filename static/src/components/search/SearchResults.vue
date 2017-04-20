@@ -1,7 +1,7 @@
 <template>
-  <table class="uk-table uk-table-hover" v-show="results && results.length > 0">
+  <table class="uk-table uk-table-hover" v-show="titleSearchResults && titleSearchResults.length > 0">
     <tbody>
-      <tr v-for="title in results">
+      <tr v-for="title in titleSearchResults">
         <td class="uk-table-expand uk-table-link">
           <router-link :to="{ name: 'title', params: { titleId: title.HexID }}">
             {{ title.LongNameEnglish }}
@@ -17,9 +17,9 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  computed: mapGetters({
-    results: 'titleSearchResults',
-  }),
+  computed: {
+    ...mapGetters(['titleSearchResults']),
+  },
 };
 </script>
 

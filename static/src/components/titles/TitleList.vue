@@ -31,15 +31,10 @@
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  beforeMount() {
-    this.getAllTitles();
-
-    this.clearTitle();
-    this.clearTitleRpls();
-    this.clearRpl();
-    this.clearImports();
-    this.clearExports();
+  computed: {
+    ...mapGetters(['allTitles', 'loadingAllTitles']),
   },
+
   methods: {
     ...mapActions([
       'getAllTitles',
@@ -50,8 +45,21 @@ export default {
       'clearExports',
     ]),
   },
-  computed: {
-    ...mapGetters(['allTitles', 'loadingAllTitles']),
+
+  head: {
+    title: {
+      inner: 'Titles',
+    },
+  },
+
+  beforeMount() {
+    this.getAllTitles();
+
+    this.clearTitle();
+    this.clearTitleRpls();
+    this.clearRpl();
+    this.clearImports();
+    this.clearExports();
   },
 };
 </script>

@@ -29,32 +29,38 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   props: ['titleId', 'rplId'],
-  beforeMount() {
-    this.listExports();
-  },
+
   computed: {
     ...mapGetters(['exports', 'loadingExports']),
   },
+
   methods: {
-    listExports() {
+    ...mapActions(['listExports']),
+
+    fetchExports() {
       const { titleId, rplId } = this;
 
       if (titleId && rplId) {
-        this.$store.dispatch('listExports', { titleId, rplId });
+        this.listExports({ titleId, rplId });
       }
     },
   },
+
   watch: {
     rplId() {
-      this.listExports();
+      this.fetchExports();
     },
     titleId() {
-      this.listExports();
+      this.fetchExports();
     },
+  },
+
+  beforeMount() {
+    this.fetchExports();
   },
 };
 </script>

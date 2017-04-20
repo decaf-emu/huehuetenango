@@ -9,22 +9,25 @@ import { mapActions, mapGetters } from 'vuex';
 import queryString from 'query-string';
 
 export default {
-  beforeMount() {
-    const { state, code } = queryString.parse(window.location.search);
-    this.processAuth({ state, code });
-  },
-  methods: {
-    ...mapActions(['processAuth']),
-  },
   computed: {
     ...mapGetters(['isLoggedIn']),
   },
+
+  methods: {
+    ...mapActions(['processAuth']),
+  },
+
   watch: {
     isLoggedIn(isLoggedIn) {
       if (isLoggedIn) {
         this.$router.push({ name: 'titles' });
       }
     },
+  },
+
+  beforeMount() {
+    const { state, code } = queryString.parse(window.location.search);
+    this.processAuth({ state, code });
   },
 };
 </script>

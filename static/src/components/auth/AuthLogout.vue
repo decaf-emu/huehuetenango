@@ -4,22 +4,25 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  beforeMount() {
-    this.$store.dispatch('logout');
+  computed: {
+    ...mapGetters(['isLoggedIn']),
   },
-  computed: mapGetters({
-    isLoggedIn: 'isLoggedIn',
-  }),
+
   watch: {
+    ...mapActions(['logout']),
+
     isLoggedIn(isLoggedIn) {
-      console.log(isLoggedIn);
       if (!isLoggedIn) {
         this.$router.push({ name: 'titles' });
       }
     },
+  },
+
+  beforeMount() {
+    this.logout();
   },
 };
 </script>

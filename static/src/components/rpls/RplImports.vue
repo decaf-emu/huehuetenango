@@ -17,34 +17,41 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import RplImportRow from './RplImportRow.vue';
 
 export default {
   components: { RplImportRow },
   props: ['titleId', 'rplId'],
-  beforeMount() {
-    this.listImports();
-  },
+
   computed: {
     ...mapGetters(['imports', 'loadingImports']),
   },
+
   methods: {
-    listImports() {
+    ...mapActions(['listImports']),
+
+    fetchImports() {
       const { titleId, rplId } = this;
 
       if (titleId && rplId) {
-        this.$store.dispatch('listImports', { titleId, rplId });
+        this.listImports({ titleId, rplId });
       }
     },
   },
+
   watch: {
     rplId() {
-      this.listImports();
+      this.fetchImports();
     },
+
     titleId() {
-      this.listImports();
+      this.fetchImports();
     },
+  },
+
+  beforeMount() {
+    this.fetchImports();
   },
 };
 </script>
