@@ -10,8 +10,9 @@ ENV DATA_DIR /data/huehuetenango
 RUN mkdir -p $OUTPUT_DIR && \
   mkdir -p $DATA_DIR && \
   groupadd -r huehuetenango && \
-  useradd -r -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
-  chown -R huehuetenango:huehuetenango $OUTPUT_DIR $DATA_DIR
+  useradd -r -u 528 -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
+  chown -R 528:huehuetenango $OUTPUT_DIR $DATA_DIR && \
+  chmod 775 $OUTPUT_DIR $DATA_DIR
 
 # create and switch to the huehuetenango user
 VOLUME /data
@@ -31,15 +32,16 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh
 # install node
 ENV NVM_DIR $HOME/.nvm
 ENV NPM_DIR $HOME/.npm
+ENV YARN_DIR $HOME/.yarn
+ENV PATH $YARN_DIR/bin:$GOPATH/bin:$PATH
+
 RUN source $NVM_DIR/nvm.sh && \
   cd static && \
   nvm install
 
 # install yarn
-ENV YARN_DIR $HOME/.yarn
 RUN source $NVM_DIR/nvm.sh && \
   curl -o- -L https://yarnpkg.com/install.sh | bash
-ENV PATH $YARN_DIR/bin:$GOPATH/bin:$PATH
 
 # build huehuetenango
 RUN source $NVM_DIR/nvm.sh && \
