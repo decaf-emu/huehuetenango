@@ -17,6 +17,9 @@ export const isAndroid = UA && UA.indexOf('android') > 0
 export const isIOS = UA && /iphone|ipad|ipod|ios/.test(UA)
 export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 
+// Firefix has a "watch" function on Object.prototype...
+export const nativeWatch = ({}).watch
+
 export let supportsPassive = false
 if (inBrowser) {
   try {
@@ -26,7 +29,7 @@ if (inBrowser) {
         /* istanbul ignore next */
         supportsPassive = true
       }
-    } : Object)) // https://github.com/facebook/flow/issues/285
+    }: Object)) // https://github.com/facebook/flow/issues/285
     window.addEventListener('test-passive', null, opts)
   } catch (e) {}
 }
@@ -153,7 +156,7 @@ if (typeof Set !== 'undefined' && isNative(Set)) {
   _Set = Set
 } else {
   // a non-standard Set polyfill that only works with primitive keys.
-  _Set = class Set {
+  _Set = class Set implements ISet {
     set: Object;
     constructor () {
       this.set = Object.create(null)
@@ -170,4 +173,11 @@ if (typeof Set !== 'undefined' && isNative(Set)) {
   }
 }
 
+interface ISet {
+  has(key: string | number): boolean;
+  add(key: string | number): mixed;
+  clear(): void;
+}
+
 export { _Set }
+export type { ISet }

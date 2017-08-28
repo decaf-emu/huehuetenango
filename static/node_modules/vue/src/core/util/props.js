@@ -1,8 +1,14 @@
 /* @flow */
 
-import { hasOwn, isObject, isPlainObject, capitalize, hyphenate } from 'shared/util'
-import { observe, observerState } from '../observer/index'
 import { warn } from './debug'
+import { observe, observerState } from '../observer/index'
+import {
+  hasOwn,
+  isObject,
+  hyphenate,
+  capitalize,
+  isPlainObject
+} from 'shared/util'
 
 type PropOptions = {
   type: Function | Array<Function> | null,
@@ -66,7 +72,8 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
   // return previous default value to avoid unnecessary watcher trigger
   if (vm && vm.$options.propsData &&
     vm.$options.propsData[key] === undefined &&
-    vm._props[key] !== undefined) {
+    vm._props[key] !== undefined
+  ) {
     return vm._props[key]
   }
   // call factory function for non-Function types

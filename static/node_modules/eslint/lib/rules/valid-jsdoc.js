@@ -180,18 +180,18 @@ module.exports = {
             let elements = [];
 
             switch (type.type) {
-                case "TypeApplication":  // {Array.<String>}
+                case "TypeApplication": // {Array.<String>}
                     elements = type.applications[0].type === "UnionType" ? type.applications[0].elements : type.applications;
                     typesToCheck.push(getCurrentExpectedTypes(type));
                     break;
-                case "RecordType":  // {{20:String}}
+                case "RecordType": // {{20:String}}
                     elements = type.fields;
                     break;
-                case "UnionType":  // {String|number|Test}
-                case "ArrayType":  // {[String, number, Test]}
+                case "UnionType": // {String|number|Test}
+                case "ArrayType": // {[String, number, Test]}
                     elements = type.elements;
                     break;
-                case "FieldType":  // Array.<{count: number, votes: number}>
+                case "FieldType": // Array.<{count: number, votes: number}>
                     if (type.value) {
                         typesToCheck.push(getCurrentExpectedTypes(type.value));
                     }
@@ -362,14 +362,22 @@ module.exports = {
                         // TODO(nzakas): Figure out logical things to do with destructured, default, rest params
                         if (param.type === "Identifier") {
                             if (jsdocParams[i] && (name !== jsdocParams[i])) {
-                                context.report({ node: jsdocNode, message: "Expected JSDoc for '{{name}}' but found '{{jsdocName}}'.", data: {
-                                    name,
-                                    jsdocName: jsdocParams[i]
-                                } });
+                                context.report({
+                                    node: jsdocNode,
+                                    message: "Expected JSDoc for '{{name}}' but found '{{jsdocName}}'.",
+                                    data: {
+                                        name,
+                                        jsdocName: jsdocParams[i]
+                                    }
+                                });
                             } else if (!params[name] && !isOverride) {
-                                context.report({ node: jsdocNode, message: "Missing JSDoc for parameter '{{name}}'.", data: {
-                                    name
-                                } });
+                                context.report({
+                                    node: jsdocNode,
+                                    message: "Missing JSDoc for parameter '{{name}}'.",
+                                    data: {
+                                        name
+                                    }
+                                });
                             }
                         }
                     });

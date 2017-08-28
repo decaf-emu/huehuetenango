@@ -1,8 +1,8 @@
 /* @flow */
 
-import { hasSymbol } from 'core/util/env'
 import { warn } from '../util/index'
-import { defineReactive } from '../observer/index'
+import { hasSymbol } from 'core/util/env'
+import { defineReactive, observerState } from '../observer/index'
 
 export function initProvide (vm: Component) {
   const provide = vm.$options.provide
@@ -16,6 +16,7 @@ export function initProvide (vm: Component) {
 export function initInjections (vm: Component) {
   const result = resolveInject(vm.$options.inject, vm)
   if (result) {
+    observerState.shouldConvert = false
     Object.keys(result).forEach(key => {
       /* istanbul ignore else */
       if (process.env.NODE_ENV !== 'production') {
@@ -31,24 +32,21 @@ export function initInjections (vm: Component) {
         defineReactive(vm, key, result[key])
       }
     })
+    observerState.shouldConvert = true
   }
 }
 
 export function resolveInject (inject: any, vm: Component): ?Object {
   if (inject) {
     // inject is :any because flow is not smart enough to figure out cached
-    // isArray here
-    const isArray = Array.isArray(inject)
     const result = Object.create(null)
-    const keys = isArray
-      ? inject
-      : hasSymbol
+    const keys = hasSymbol
         ? Reflect.ownKeys(inject)
         : Object.keys(inject)
 
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i]
-      const provideKey = isArray ? key : inject[key]
+      const provideKey = inject[key]
       let source = vm
       while (source) {
         if (source._provided && provideKey in source._provided) {
@@ -56,6 +54,9 @@ export function resolveInject (inject: any, vm: Component): ?Object {
           break
         }
         source = source.$parent
+      }
+      if (process.env.NODE_ENV !== 'production' && !source) {
+        warn(`Injection "${key}" not found`, vm)
       }
     }
     return result

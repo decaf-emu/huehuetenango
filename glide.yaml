@@ -42,3 +42,5 @@ import:
   - trees/redblacktree
 - package: github.com/boltdb/bolt
   version: ^1.3.0
+- package: github.com/syndtr/goleveldb
+- package: github.com/golang/snappy

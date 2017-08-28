@@ -27,14 +27,15 @@ type RenderBundle = {
   modules?: { [filename: string]: Array<string> };
 };
 
-export function createBundleRendererCreator (createRenderer: () => Renderer) {
+export function createBundleRendererCreator (
+  createRenderer: (options?: RenderOptions) => Renderer
+) {
   return function createBundleRenderer (
     bundle: string | RenderBundle,
     rendererOptions?: RenderOptions = {}
   ) {
     let files, entry, maps
     let basedir = rendererOptions.basedir
-    const runInNewContext = rendererOptions.runInNewContext !== false
 
     // load bundle if given filepath
     if (
@@ -76,7 +77,12 @@ export function createBundleRendererCreator (createRenderer: () => Renderer) {
 
     const renderer = createRenderer(rendererOptions)
 
-    const run = createBundleRunner(entry, files, basedir, runInNewContext)
+    const run = createBundleRunner(
+      entry,
+      files,
+      basedir,
+      rendererOptions.runInNewContext
+    )
 
     return {
       renderToString: (context?: Object, cb: (err: ?Error, res: ?string) => void) => {

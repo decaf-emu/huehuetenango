@@ -1,10 +1,13 @@
-import { Class, Toggable } from '../mixin/index';
+import { Class, Togglable } from '../mixin/index';
+import { assign } from '../util/index';
 
 export default function (UIkit) {
 
     UIkit.component('alert', {
 
-        mixins: [Class, Toggable],
+        attrs: true,
+
+        mixins: [Class, Togglable],
 
         args: 'animation',
 
@@ -14,9 +17,9 @@ export default function (UIkit) {
 
         defaults: {
             animation: [true],
-            close: '.uk-alert-close',
+            selClose: '.uk-alert-close',
             duration: 150,
-            hideProps: {opacity: 0}
+            hideProps: assign({opacity: 0}, Togglable.defaults.hideProps)
         },
 
         events: [
@@ -26,12 +29,12 @@ export default function (UIkit) {
                 name: 'click',
 
                 delegate() {
-                    return this.close;
+                    return this.selClose;
                 },
 
                 handler(e) {
                     e.preventDefault();
-                    this.closeAlert();
+                    this.close();
                 }
 
             }
@@ -40,7 +43,7 @@ export default function (UIkit) {
 
         methods: {
 
-            closeAlert() {
+            close() {
                 this.toggleElement(this.$el).then(() => this.$destroy(true));
             }
 

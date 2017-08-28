@@ -51,7 +51,11 @@ module.exports = {
         const config = context.options[0] || "always";
 
         if (typeof config === "string") {
-            options.blocks = config === "always";
+            const shouldHavePadding = config === "always";
+
+            options.blocks = shouldHavePadding;
+            options.switches = shouldHavePadding;
+            options.classes = shouldHavePadding;
         } else {
             if (config.hasOwnProperty("blocks")) {
                 options.blocks = config.blocks === "always";
@@ -198,7 +202,7 @@ module.exports = {
                         node,
                         loc: { line: tokenBeforeFirst.loc.start.line, column: tokenBeforeFirst.loc.start.column },
                         fix(fixer) {
-                            return fixer.replaceTextRange([tokenBeforeFirst.end, firstBlockToken.start - firstBlockToken.loc.start.column], "\n");
+                            return fixer.replaceTextRange([tokenBeforeFirst.range[1], firstBlockToken.range[0] - firstBlockToken.loc.start.column], "\n");
                         },
                         message: NEVER_MESSAGE
                     });
@@ -211,7 +215,7 @@ module.exports = {
                         loc: { line: tokenAfterLast.loc.end.line, column: tokenAfterLast.loc.end.column - 1 },
                         message: NEVER_MESSAGE,
                         fix(fixer) {
-                            return fixer.replaceTextRange([lastBlockToken.end, tokenAfterLast.start - tokenAfterLast.loc.start.column], "\n");
+                            return fixer.replaceTextRange([lastBlockToken.range[1], tokenAfterLast.range[0] - tokenAfterLast.loc.start.column], "\n");
                         }
                     });
                 }
