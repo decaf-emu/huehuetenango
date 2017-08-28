@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"crypto/rand"
 	"net/http"
 
@@ -73,7 +74,7 @@ func (a *api) LoginCallback(c echo.Context) error {
 	}
 
 	client := github.NewClient(a.authConfig.Client(oauth2.NoContext, oauthToken))
-	githubUser, _, err := client.Users.Get("")
+	githubUser, _, err := client.Users.Get(context.Background(), "")
 	if err != nil {
 		return err
 	}

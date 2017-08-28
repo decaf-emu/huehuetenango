@@ -28,20 +28,14 @@ func main() {
 
 	fs := flag.NewFlagSetWithEnvPrefix(os.Args[0], "HUEHUE", flag.ExitOnError)
 	httpAddr := fs.String("http_addr", ":8080", "HTTP listen address")
-	databasePath := fs.String("db_path", "huehuetenango.db", "")
+	databasePath := fs.String("db_path", "db", "")
 	searchPath := fs.String("search_db_path", "search.bleve", "")
 	githubClientID := fs.String("github_client_id", "", "")
 	githubClientSecret := fs.String("github_client_secret", "", "")
 	jwtSigningSecret := fs.String("jwt_signing_secret", "", "")
 	fs.Parse(os.Args[1:])
 
-	databaseDir, err := filepath.Abs(filepath.Dir(*databasePath))
-	if err != nil {
-		log.WithFields(log.Fields{
-			"path": *databasePath,
-			"err":  err.Error(),
-		}).Fatal("failed to resolve absolute database directory")
-	}
+	databaseDir, err := filepath.Abs(*databasePath)
 
 	if _, err = os.Stat(databaseDir); os.IsNotExist(err) {
 		if err = os.MkdirAll(databaseDir, 0700); err != nil {
@@ -52,7 +46,7 @@ func main() {
 		}
 	}
 
-	lockPath := filepath.Join(databaseDir, filepath.Base(*databasePath)+".lock")
+	lockPath := filepath.Join(databaseDir, "lock")
 	lock, err := lockfile.New(lockPath)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -78,7 +72,7 @@ func main() {
 
 	defer lock.Unlock()
 
-	repository, err := repository.NewStormRepository(*databasePath)
+	repository, err := repository.NewLevelDBRepository(databaseDir)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"path": *databasePath,

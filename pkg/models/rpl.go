@@ -2,11 +2,11 @@ package models
 
 type RPLID string
 
-type ObjectType int
+type ObjectType string
 
 const (
-	DataObject ObjectType = iota
-	FunctionObject
+	DataObject     ObjectType = "data"
+	FunctionObject ObjectType = "func"
 )
 
 type RPL struct {

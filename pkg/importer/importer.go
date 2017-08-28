@@ -180,13 +180,13 @@ func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.R
 	for _, existing := range existingExports {
 		if existing.Type == models.DataObject {
 			if _, exists := dataMap[existing.Name]; exists {
-				delete(dataMap, existing.Name)
+				dataMap[existing.Name] = false
 			} else {
 				i.repository.RemoveExport(existing.ID)
 			}
 		} else if existing.Type == models.FunctionObject {
 			if _, exists := functionMap[existing.Name]; exists {
-				delete(functionMap, existing.Name)
+				functionMap[existing.Name] = false
 			} else {
 				i.repository.RemoveExport(existing.ID)
 			}
@@ -194,29 +194,33 @@ func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.R
 	}
 
 	exports := make([]*models.Export, 0, len(dataMap)+len(functionMap))
-	for name := range dataMap {
-		model, err := models.NewTempExport(name)
-		if err != nil {
-			return err
-		}
-		defer models.ReleaseTempExport(model)
+	for name, save := range dataMap {
+		if save {
+			model, err := models.NewTempExport(name)
+			if err != nil {
+				return err
+			}
+			defer models.ReleaseTempExport(model)
 
-		model.TitleID = rpl.TitleID
-		model.RPLID = rpl.ID
-		model.Type = models.DataObject
-		exports = append(exports, model)
+			model.TitleID = rpl.TitleID
+			model.RPLID = rpl.ID
+			model.Type = models.DataObject
+			exports = append(exports, model)
+		}
 	}
-	for name := range functionMap {
-		model, err := models.NewTempExport(name)
-		if err != nil {
-			return err
-		}
-		defer models.ReleaseTempExport(model)
+	for name, save := range functionMap {
+		if save {
+			model, err := models.NewTempExport(name)
+			if err != nil {
+				return err
+			}
+			defer models.ReleaseTempExport(model)
 
-		model.TitleID = rpl.TitleID
-		model.RPLID = rpl.ID
-		model.Type = models.FunctionObject
-		exports = append(exports, model)
+			model.TitleID = rpl.TitleID
+			model.RPLID = rpl.ID
+			model.Type = models.FunctionObject
+			exports = append(exports, model)
+		}
 	}
 	if err := i.repository.StoreExports(exports); err != nil {
 		return err
@@ -245,13 +249,13 @@ func (i *repositoryImporter) importRPLImports(title *models.Title, rpl *models.R
 		for _, existing := range existingImports {
 			if existing.Type == models.DataObject {
 				if _, exists := dataMap[existing.Name]; exists {
-					delete(dataMap, existing.Name)
+					dataMap[existing.Name] = false
 				} else {
 					i.repository.RemoveImport(existing.ID)
 				}
 			} else if existing.Type == models.FunctionObject {
 				if _, exists := functionMap[existing.Name]; exists {
-					delete(functionMap, existing.Name)
+					functionMap[existing.Name] = false
 				} else {
 					i.repository.RemoveImport(existing.ID)
 				}
@@ -259,31 +263,35 @@ func (i *repositoryImporter) importRPLImports(title *models.Title, rpl *models.R
 		}
 
 		imports := make([]*models.Import, 0, len(dataMap)+len(functionMap))
-		for name := range dataMap {
-			model, err := models.NewTempImport(name)
-			if err != nil {
-				return err
-			}
-			defer models.ReleaseTempImport(model)
+		for name, save := range dataMap {
+			if save {
+				model, err := models.NewTempImport(name)
+				if err != nil {
+					return err
+				}
+				defer models.ReleaseTempImport(model)
 
-			model.TitleID = rpl.TitleID
-			model.RPLID = rpl.ID
-			model.Type = models.DataObject
-			model.SourceName = sourceImport.Name
-			imports = append(imports, model)
+				model.TitleID = rpl.TitleID
+				model.RPLID = rpl.ID
+				model.Type = models.DataObject
+				model.SourceName = sourceImport.Name
+				imports = append(imports, model)
+			}
 		}
-		for name := range functionMap {
-			model, err := models.NewTempImport(name)
-			if err != nil {
-				return err
-			}
-			defer models.ReleaseTempImport(model)
+		for name, save := range functionMap {
+			if save {
+				model, err := models.NewTempImport(name)
+				if err != nil {
+					return err
+				}
+				defer models.ReleaseTempImport(model)
 
-			model.TitleID = rpl.TitleID
-			model.RPLID = rpl.ID
-			model.Type = models.FunctionObject
-			model.SourceName = sourceImport.Name
-			imports = append(imports, model)
+				model.TitleID = rpl.TitleID
+				model.RPLID = rpl.ID
+				model.Type = models.FunctionObject
+				model.SourceName = sourceImport.Name
+				imports = append(imports, model)
+			}
 		}
 
 		if err := i.repository.StoreImports(imports); err != nil {
@@ -295,7 +303,7 @@ func (i *repositoryImporter) importRPLImports(title *models.Title, rpl *models.R
 }
 
 func (i *repositoryImporter) updateImportSources() error {
-	titles, err := i.repository.ListTitles(true)
+	titles, err := i.repository.ListTitles()
 	if err != nil {
 		return err
 	}

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"github.com/asdine/storm"
-	"github.com/asdine/storm/q"
 	"github.com/decaf-emu/huehuetenango/pkg/models"
 )
 
@@ -34,14 +33,9 @@ func (r *stormRepository) FindTitleByHexID(id string) (*models.Title, error) {
 	return title, nil
 }
 
-func (r *stormRepository) ListTitles(includeSystem bool) ([]*models.Title, error) {
+func (r *stormRepository) ListTitles() ([]*models.Title, error) {
 	titles := make([]*models.Title, 0)
-	var err error
-	if includeSystem {
-		err = r.db.All(&titles)
-	} else {
-		err = r.db.Select(q.Not(q.Eq("ID", models.SystemTitleID))).Find(&titles)
-	}
+	err := r.db.All(&titles)
 	if err == storm.ErrNotFound {
 		return titles, nil
 	}

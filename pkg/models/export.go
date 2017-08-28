@@ -17,6 +17,13 @@ type Export struct {
 	Name    string     `storm:"index"`
 }
 
+func (d *Export) Copy(s *Export) {
+	d.TitleID = s.TitleID
+	d.RPLID = s.RPLID
+	d.Type = s.Type
+	d.Name = s.Name
+}
+
 func NewExport(name string) (*Export, error) {
 	id, err := ulid.New(ulid.Now(), rand.Reader)
 	if err != nil {

@@ -8,7 +8,7 @@ type Repository interface {
 	StoreTitle(value *models.Title) error
 	FindTitle(id models.TitleID) (*models.Title, error)
 	FindTitleByHexID(id string) (*models.Title, error)
-	ListTitles(includeSystem bool) ([]*models.Title, error)
+	ListTitles() ([]*models.Title, error)
 
 	StoreRPL(value *models.RPL) error
 	RemoveRPL(id models.RPLID) error
