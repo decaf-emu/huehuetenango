@@ -1,21 +1,7 @@
-FROM golang:1.8
+FROM golang:1.9 AS builder
 
 # switch the shell used by RUN from sh to bash
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-ENV OUTPUT_DIR /opt/huehuetenango
-ENV DATA_DIR /data/huehuetenango
-
-# create the huehuetenango user
-RUN mkdir -p $OUTPUT_DIR && \
-  mkdir -p $DATA_DIR && \
-  groupadd -r huehuetenango && \
-  useradd -r -u 528 -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
-  chown -R 528:huehuetenango $OUTPUT_DIR $DATA_DIR && \
-  chmod 775 $OUTPUT_DIR $DATA_DIR
-
-# create and switch to the huehuetenango user
-VOLUME /data
 
 ENV HOME /root
 ENV GOPATH $HOME/go
@@ -27,7 +13,7 @@ COPY . $PROJECT_DIR
 WORKDIR /root/go/src/github.com/decaf-emu/huehuetenango
 
 # install nvm
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
 
 # install node
 ENV NVM_DIR $HOME/.nvm
@@ -50,27 +36,31 @@ RUN source $NVM_DIR/nvm.sh && \
   cd .. && \
   make
 
-# copy and assign permissions to the build files
+FROM ubuntu:latest
+
+ENV OUTPUT_DIR /opt/huehuetenango
+ENV DATA_DIR /data/huehuetenango
+
+# create the huehuetenango user
 RUN mkdir -p $OUTPUT_DIR && \
-  cp $PROJECT_DIR/huehuetenango $OUTPUT_DIR/huehuetenango && \
-  cp -R $PROJECT_DIR/static/dist $OUTPUT_DIR/static && \
-  chown -R huehuetenango:huehuetenango $OUTPUT_DIR
+  mkdir -p $DATA_DIR && \
+  groupadd -r huehuetenango && \
+  useradd -r -u 528 -g huehuetenango -d $OUTPUT_DIR -s /sbin/nologin huehuetenango && \
+  chown -R 528:huehuetenango $OUTPUT_DIR $DATA_DIR && \
+  chmod 775 $OUTPUT_DIR $DATA_DIR
 
-# allow huehuetenango to use ports less than 1024
-RUN setcap 'cap_net_bind_service=+ep' $OUTPUT_DIR/huehuetenango
+VOLUME /data
 
-# clean the build related directories
-RUN rm -rf $GOPATH && \
-  rm -rf $NVM_DIR && \
-  rm -rf $YARN_DIR && \
-  rm -rf $NPM_DIR
+# copy and assign permissions to the build files
+RUN mkdir -p $OUTPUT_DIR
+COPY --from=builder /root/go/src/github.com/decaf-emu/huehuetenango/huehuetenango /opt/huehuetenango/huehuetenango
+COPY --from=builder /root/go/src/github.com/decaf-emu/huehuetenango/static/dist /opt/huehuetenango/static
+RUN chown -R huehuetenango:huehuetenango $OUTPUT_DIR
 
 # install and configure supervisor
 RUN apt-get update && \
   apt-get install -y supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-EXPOSE 80 443
 
 USER huehuetenango
 WORKDIR $OUTPUT_DIR
