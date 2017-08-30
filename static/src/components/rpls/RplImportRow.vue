@@ -1,7 +1,7 @@
 <template>
   <tr>
     <td class="uk-table-expand uk-table-link" v-if="item.source_title_id && item.source_id">
-      <router-link :to="{ name: 'title', params: { titleId: item.source_title_id, rplId: item.source_id, type: 'exports' }}">
+      <router-link class="uk-link-reset" :to="{ name: 'title', params: { titleId: item.source_title_id, rplId: item.source_id, type: 'exports' }}">
         <code>{{ item.name }}</code>
       </router-link>
     </td>
@@ -9,12 +9,12 @@
       <code>{{ item.name }}</code>
     </td>
 
-    <td class="uk-table-shrink uk-table-link" v-if="item.source_title_id && item.source_id">
-      <router-link :to="{ name: 'title', params: { titleId: item.source_title_id, rplId: item.source_id, type: 'exports' }}">
+    <td class="uk-table-shrink uk-table-link uk-text-right" v-if="item.source_title_id && item.source_id">
+      <router-link class="uk-link-reset" :to="{ name: 'title', params: { titleId: item.source_title_id, rplId: item.source_id, type: 'exports' }}">
         {{ item.source }}
       </router-link>
     </td>
-    <td class="uk-table-shrink" v-if="!item.source_title_id || !item.source_id">
+    <td class="uk-table-shrink uk-text-right" v-if="!item.source_title_id || !item.source_id">
       {{ item.source }}
     </td>
   </tr>
