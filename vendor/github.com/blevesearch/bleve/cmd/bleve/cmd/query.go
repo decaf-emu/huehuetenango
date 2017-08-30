@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// 		http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,12 +19,13 @@ import (
 	"strings"
 
 	"github.com/blevesearch/bleve"
+	"github.com/blevesearch/bleve/search/query"
 	"github.com/spf13/cobra"
 )
 
 var limit, skip, repeat int
 var explain, highlight, fields bool
-var qtype, qfield string
+var qtype, qfield, sortby string
 
 // queryCmd represents the query command
 var queryCmd = &cobra.Command{
@@ -45,6 +46,13 @@ var queryCmd = &cobra.Command{
 			if fields {
 				req.Fields = []string{"*"}
 			}
+			if sortby != "" {
+				if strings.Contains(sortby, ",") {
+					req.SortBy(strings.Split(sortby, ","))
+				} else {
+					req.SortBy([]string{sortby})
+				}
+			}
 			res, err := idx.Search(req)
 			if err != nil {
 				return fmt.Errorf("error running query: %v", err)
@@ -55,27 +63,27 @@ var queryCmd = &cobra.Command{
 	},
 }
 
-func buildQuery(args []string) bleve.Query {
-	var query bleve.Query
+func buildQuery(args []string) query.Query {
+	var q query.Query
 	switch qtype {
 	case "prefix":
 		pquery := bleve.NewPrefixQuery(strings.Join(args[1:], " "))
 		if qfield != "" {
 			pquery.SetField(qfield)
 		}
-		query = pquery
+		q = pquery
 	case "term":
 		pquery := bleve.NewTermQuery(strings.Join(args[1:], " "))
 		if qfield != "" {
 			pquery.SetField(qfield)
 		}
-		query = pquery
+		q = pquery
 	default:
 		// build a search with the provided parameters
 		queryString := strings.Join(args[1:], " ")
-		query = bleve.NewQueryStringQuery(queryString)
+		q = bleve.NewQueryStringQuery(queryString)
 	}
-	return query
+	return q
 }
 
 func init() {
@@ -89,4 +97,5 @@ func init() {
 	queryCmd.Flags().BoolVar(&fields, "fields", false, "Load stored fields, default false.")
 	queryCmd.Flags().StringVarP(&qtype, "type", "t", "query_string", "Type of query to run, defaults to 'query_string'")
 	queryCmd.Flags().StringVarP(&qfield, "field", "f", "", "Restrict query to field, by default no restriction, not applicable to query_string queries.")
+	queryCmd.Flags().StringVarP(&sortby, "sort-by", "b", "", "Sort by field.")
 }

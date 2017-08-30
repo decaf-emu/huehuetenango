@@ -1,14 +1,12 @@
 <template>
-  <div class="uk-container uk-container-expand uk-position-relative">
-    <div class="uk-margin uk-margin-top uk-margin-bottom" uk-grid>
-      <h1 v-if="title">{{ title.LongNameEnglish }}</h1>
+  <div>
+    <div uk-height-viewport class="uk-panel uk-panel-scrollable uk-width-1-4@m uk-position-fixed uk-padding-small">
+      <h3 v-if="title">{{ title.LongNameEnglish }}</h3>
+      <RplList v-if="titleId" :loading="loadingTitleRpls" :titleId="titleId" :rpls="titleRpls" :type="type" />
     </div>
-
     <div uk-grid>
-      <div class="uk-width-1-5">
-        <RplList class="rpl-list" v-if="titleId" :loading="loadingTitleRpls" :titleId="titleId" :rpls="titleRpls" :type="type" />
-      </div>
-      <div class="uk-width-4-5">
+      <div class="uk-width-1-4@m"></div>
+      <div class="uk-width-3-4@m">
         <RplView v-if="titleId && rplId" :titleId="titleId" :rplId="rplId" :type="type" />
       </div>
     </div>

@@ -1,9 +1,9 @@
 <template>
   <div class="uk-position-relative">
-    <h3>Functions</h3>
+    <h5>Functions</h5>
     <div class="uk-overflow-auto">
       <table class="uk-table">
-        <tr v-for="item in exports.functions">
+        <tr v-for="item in exports.functions" :key="item.name">
           <td>
             <code>
               {{ item }}
@@ -12,11 +12,10 @@
         </tr>
       </table>
     </div>
-
-    <h3>Data</h3>
+    <h5>Data</h5>
     <div class="uk-overflow-auto">
       <table class="uk-table">
-        <tr v-for="item in exports.data">
+        <tr v-for="item in exports.data" :key="item.name">
           <td>
             <code>
               {{ item }}

@@ -12,7 +12,7 @@
         <div class="uk-alert-success" uk-alert v-show="importTitlesSuccess">Import succeeded.</div>
         <div class="uk-alert-danger" uk-alert v-show="importTitlesFailed">Something went wrong.</div>
         <div uk-form-custom="target: true">
-          <input type="file" @change="fileChange($event.target.files[0]);" :disabled="importingTitles">
+          <input type="file" @change="fileChange($event.target.files[0])" :disabled="importingTitles">
           <input class="uk-input uk-form-width-medium" type="text" placeholder="Select file" disabled>
         </div>
         <button class="uk-button uk-button-default" :disabled="file === null || importingTitles">Submit</button>

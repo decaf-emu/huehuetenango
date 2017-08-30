@@ -3,15 +3,17 @@
     <TopMenu />
     <SideMenu />
     <router-view class="view"></router-view>
+    <SearchResults />
   </div>
 </template>
 
 <script>
 import TopMenu from './TopMenu.vue';
 import SideMenu from './SideMenu.vue';
+import SearchResults from './search/SearchResults.vue';
 
 export default {
-  components: { TopMenu, SideMenu },
+  components: { TopMenu, SideMenu, SearchResults },
 };
 </script>
 

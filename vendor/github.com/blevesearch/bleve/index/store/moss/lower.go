@@ -1,13 +1,16 @@
 //  Copyright (c) 2016 Couchbase, Inc.
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the
-//  License. You may obtain a copy of the License at
-//    http://www.apache.org/licenses/LICENSE-2.0
-//  Unless required by applicable law or agreed to in writing,
-//  software distributed under the License is distributed on an "AS
-//  IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-//  express or implied. See the License for the specific language
-//  governing permissions and limitations under the License.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // Package moss provides a KVStore implementation based on the
 // github.com/couchbaselabs/moss library.
@@ -99,8 +102,9 @@ type llStore struct {
 // llSnapshot represents a lower-level snapshot, wrapping a bleve
 // store.KVReader, and implements the moss.Snapshot interface.
 type llSnapshot struct {
-	llStore  *llStore // Holds 1 refs on the llStore.
-	kvReader store.KVReader
+	llStore        *llStore // Holds 1 refs on the llStore.
+	kvReader       store.KVReader
+	childSnapshots map[string]*llSnapshot
 
 	m    sync.Mutex // Protects fields that follow.
 	refs int
@@ -313,6 +317,29 @@ func (llss *llSnapshot) decRef() {
 	llss.m.Unlock()
 }
 
+// ChildCollectionNames returns an array of child collection name strings.
+func (llss *llSnapshot) ChildCollectionNames() ([]string, error) {
+	var childCollections = make([]string, len(llss.childSnapshots))
+	idx := 0
+	for name, _ := range llss.childSnapshots {
+		childCollections[idx] = name
+		idx++
+	}
+	return childCollections, nil
+}
+
+// ChildCollectionSnapshot returns a Snapshot on a given child
+// collection by its name.
+func (llss *llSnapshot) ChildCollectionSnapshot(childCollectionName string) (
+	moss.Snapshot, error) {
+	childSnapshot, exists := llss.childSnapshots[childCollectionName]
+	if !exists {
+		return nil, nil
+	}
+	childSnapshot.addRef()
+	return childSnapshot, nil
+}
+
 func (llss *llSnapshot) Close() error {
 	llss.decRef()
 
@@ -470,6 +497,7 @@ func InitMossStore(config map[string]interface{}, options moss.CollectionOptions
 
 	llSnapshot, err := llUpdate(nil)
 	if err != nil {
+		_ = s.Close()
 		return nil, nil, nil, nil, err
 	}
 
@@ -481,9 +509,13 @@ func InitMossStore(config map[string]interface{}, options moss.CollectionOptions
 		return stats
 	}
 
-	return llSnapshot, llUpdate, nil, llStats, nil
+	return llSnapshot, llUpdate, sw, llStats, nil
 }
 
+// mossStoreWrapper implements the bleve.index.store.KVStore
+// interface, but only barely enough to allow it to be passed around
+// as a lower-level store.  Advanced apps will likely cast the
+// mossStoreWrapper to access the Actual() method.
 type mossStoreWrapper struct {
 	m    sync.Mutex
 	refs int
@@ -505,4 +537,19 @@ func (w *mossStoreWrapper) Close() (err error) {
 	}
 	w.m.Unlock()
 	return err
+}
+
+func (w *mossStoreWrapper) Reader() (store.KVReader, error) {
+	return nil, fmt.Errorf("unexpected")
+}
+
+func (w *mossStoreWrapper) Writer() (store.KVWriter, error) {
+	return nil, fmt.Errorf("unexpected")
+}
+
+func (w *mossStoreWrapper) Actual() *moss.Store {
+	w.m.Lock()
+	rv := w.s
+	w.m.Unlock()
+	return rv
 }

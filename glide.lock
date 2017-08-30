@@ -1,5 +1,5 @@
-hash: 857a956f0ee9faff68fe9fccd2b7c8f5254be07cb8e6d947295ae069962f8d78
-updated: 2017-08-28T14:59:25.083365623+01:00
+hash: a1dabd5e7e3e5346ec30e26e4d611ad2402fbdc12c0d1dbde4f358111f727e11
+updated: 2017-08-30T21:45:10.72828547+01:00
 imports:
 - name: github.com/asdine/storm
   version: 2da548c16156b3197728372bff5614033084aff5
@@ -10,35 +10,41 @@ imports:
   - internal
   - q
 - name: github.com/blevesearch/bleve
-  version: 97393d027342f43b17da2f02c090a4e728ac929f
+  version: 930c06dfecb08a73a4411e18a3f50ebe84264ade
   subpackages:
   - analysis
-  - analysis/analyzers/standard_analyzer
-  - analysis/datetime_parsers/datetime_optional
-  - analysis/datetime_parsers/flexible_go
-  - analysis/language/en
-  - analysis/token_filters/lower_case_filter
-  - analysis/token_filters/porter
-  - analysis/token_filters/stop_tokens_filter
-  - analysis/tokenizers/unicode
+  - analysis/analyzer/custom
+  - analysis/analyzer/standard
+  - analysis/datetime/flexible
+  - analysis/datetime/optional
+  - analysis/lang/en
+  - analysis/token/lowercase
+  - analysis/token/ngram
+  - analysis/token/porter
+  - analysis/token/stop
+  - analysis/tokenizer/unicode
   - document
+  - geo
   - index
   - index/store
   - index/store/boltdb
+  - index/store/goleveldb
   - index/store/gtreap
-  - index/upside_down
-  - numeric_util
+  - index/upsidedown
+  - mapping
+  - numeric
   - registry
   - search
-  - search/collectors
-  - search/facets
+  - search/collector
+  - search/facet
   - search/highlight
-  - search/highlight/fragment_formatters/html
-  - search/highlight/fragmenters/simple
-  - search/highlight/highlighters/html
-  - search/highlight/highlighters/simple
-  - search/scorers
-  - search/searchers
+  - search/highlight/format/html
+  - search/highlight/fragmenter/simple
+  - search/highlight/highlighter/html
+  - search/highlight/highlighter/simple
+  - search/query
+  - search/scorer
+  - search/searcher
 - name: github.com/blevesearch/go-porterstemmer
   version: 23a2c8e5cf1f380f27722c6d2ae8896431dc7d0e
   repo: https://github.com/blevesearch/go-porterstemmer
@@ -68,6 +74,8 @@ imports:
   version: 53e6ce116135b80d037921a7fdd5138cf32d7a8a
   subpackages:
   - query
+- name: github.com/jackwakefield/ghs-demangle
+  version: 1da81efca463fb8ff8fb649c5d9e11ea95d529aa
 - name: github.com/joho/godotenv
   version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
 - name: github.com/labstack/echo

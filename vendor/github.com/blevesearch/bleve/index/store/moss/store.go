@@ -1,13 +1,16 @@
 //  Copyright (c) 2016 Couchbase, Inc.
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the
-//  License. You may obtain a copy of the License at
-//    http://www.apache.org/licenses/LICENSE-2.0
-//  Unless required by applicable law or agreed to in writing,
-//  software distributed under the License is distributed on an "AS
-//  IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-//  express or implied. See the License for the specific language
-//  governing permissions and limitations under the License.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // Package moss provides a KVStore implementation based on the
 // github.com/couchbaselabs/moss library.
@@ -35,10 +38,11 @@ type Store struct {
 	m       sync.Mutex
 	ms      moss.Collection
 	mo      store.MergeOperator
-	llstore store.KVStore // May be nil (ex: when using mossStore).
+	llstore store.KVStore // May be nil.
 	llstats statsFunc     // May be nil.
 
-	s *stats
+	s      *stats
+	config map[string]interface{}
 }
 
 type statsFunc func() map[string]interface{}
@@ -164,12 +168,22 @@ func New(mo store.MergeOperator, config map[string]interface{}) (
 		mo:      mo,
 		llstore: llStore,
 		llstats: llStats,
+		config:  config,
 	}
 	rv.s = &stats{s: &rv}
 	return &rv, nil
 }
 
 func (s *Store) Close() error {
+	if val, ok := s.config["mossAbortCloseEnabled"]; ok {
+		if v, ok := val.(bool); ok && v {
+			if msw, ok := s.llstore.(*mossStoreWrapper); ok {
+				if s := msw.Actual(); s != nil {
+					_ = s.CloseEx(moss.StoreCloseExOptions{Abort: true})
+				}
+			}
+		}
+	}
 	return s.ms.Close()
 }
 
@@ -198,6 +212,10 @@ func (s *Store) Stats() json.Marshaler {
 
 func (s *Store) StatsMap() map[string]interface{} {
 	return s.s.statsMap()
+}
+
+func (s *Store) LowerLevelStore() store.KVStore {
+	return s.llstore
 }
 
 func init() {

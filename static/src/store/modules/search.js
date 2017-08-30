@@ -3,29 +3,47 @@ import search from '../../api/search';
 
 export default {
   state: {
+    term: null,
     titleResults: [],
+    functionResults: [],
+    dataResults: [],
   },
 
   getters: {
+    searchTerm: state => state.term,
     titleSearchResults: state => state.titleResults,
+    functionSearchResults: state => state.functionResults,
+    dataSearchResults: state => state.dataResults,
   },
 
   actions: {
-    async searchTitles({ commit }, term) {
+    async search({ commit }, term) {
+      commit(types.SEARCH_TERM, { term });
+
       try {
-        const response = await search.searchTitles(term);
-        commit(types.SEARCH_TITLES_SUCCESS, {
-          results: response.data,
+        const response = await search.perform(term);
+        commit(types.SEARCH_SUCCESS, {
+          titles: response.data && response.data.titles ? response.data.titles : [],
+          exports: response.data && response.data.exports ? response.data.exports : [],
         });
       } catch (error) {
-        commit(types.SEARCH_TITLES_FAILURE, { error });
+        commit(types.SEARCH_FAILURE, { error });
       }
+    },
+
+    clearSearch({ commit }) {
+      commit(types.SEARCH_TERM, { term: null });
     },
   },
 
   mutations: {
-    [types.SEARCH_TITLES_SUCCESS](state, { results }) {
-      state.titleResults = results;
+    [types.SEARCH_TERM](state, { term }) {
+      state.term = term;
+    },
+    [types.SEARCH_SUCCESS](state, { titles, exports }) {
+      state.titleResults = titles;
+      state.functionResults = exports.filter(item => item.Type === 'func');
+      state.dataResults = exports.filter(item => item.Type === 'data');
     },
   },
 };

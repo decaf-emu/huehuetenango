@@ -1,6 +1,6 @@
 <template>
-  <div class="uk-position-relative">
-    <h2 v-if="rpl">{{ rpl.Name }}</h2>
+  <div class="uk-position-relative uk-padding-small">
+    <h4 v-if="rpl">{{ rpl.Name }}</h4>
     <ul uk-tab>
       <li :class="{ 'uk-active': type == 'imports' }">
         <router-link :to="{ name: 'title', params: { titleId, rplId, type: 'imports' }}">Imports</router-link>

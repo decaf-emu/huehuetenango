@@ -179,14 +179,14 @@ func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.R
 
 	for _, existing := range existingExports {
 		if existing.Type == models.DataObject {
-			if _, exists := dataMap[existing.Name]; exists {
-				dataMap[existing.Name] = false
+			if _, exists := dataMap[existing.MangledName]; exists {
+				dataMap[existing.MangledName] = false
 			} else {
 				i.repository.RemoveExport(existing.ID)
 			}
 		} else if existing.Type == models.FunctionObject {
-			if _, exists := functionMap[existing.Name]; exists {
-				functionMap[existing.Name] = false
+			if _, exists := functionMap[existing.MangledName]; exists {
+				functionMap[existing.MangledName] = false
 			} else {
 				i.repository.RemoveExport(existing.ID)
 			}
@@ -203,6 +203,7 @@ func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.R
 			defer models.ReleaseTempExport(model)
 
 			model.TitleID = rpl.TitleID
+			model.TitleHexID = title.HexID
 			model.RPLID = rpl.ID
 			model.Type = models.DataObject
 			exports = append(exports, model)
@@ -217,12 +218,16 @@ func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.R
 			defer models.ReleaseTempExport(model)
 
 			model.TitleID = rpl.TitleID
+			model.TitleHexID = title.HexID
 			model.RPLID = rpl.ID
 			model.Type = models.FunctionObject
 			exports = append(exports, model)
 		}
 	}
 	if err := i.repository.StoreExports(exports); err != nil {
+		return err
+	}
+	if err := i.index.IndexExports(exports); err != nil {
 		return err
 	}
 	return nil
@@ -248,14 +253,14 @@ func (i *repositoryImporter) importRPLImports(title *models.Title, rpl *models.R
 
 		for _, existing := range existingImports {
 			if existing.Type == models.DataObject {
-				if _, exists := dataMap[existing.Name]; exists {
-					dataMap[existing.Name] = false
+				if _, exists := dataMap[existing.MangledName]; exists {
+					dataMap[existing.MangledName] = false
 				} else {
 					i.repository.RemoveImport(existing.ID)
 				}
 			} else if existing.Type == models.FunctionObject {
-				if _, exists := functionMap[existing.Name]; exists {
-					functionMap[existing.Name] = false
+				if _, exists := functionMap[existing.MangledName]; exists {
+					functionMap[existing.MangledName] = false
 				} else {
 					i.repository.RemoveImport(existing.ID)
 				}
@@ -321,7 +326,7 @@ func (i *repositoryImporter) updateImportSources() error {
 			return err
 		}
 		for _, export := range exports {
-			key := rpl.Name + "_" + export.Name
+			key := rpl.Name + "_" + export.MangledName
 			if export.Type == models.DataObject {
 				systemDataMap[key] = export
 			} else if export.Type == models.FunctionObject {
@@ -344,7 +349,7 @@ func (i *repositoryImporter) updateImportSources() error {
 				return err
 			}
 			for _, export := range exports {
-				key := rpl.Name + "_" + export.Name
+				key := rpl.Name + "_" + export.MangledName
 				if export.Type == models.DataObject {
 					titleDataMap[key] = export
 				} else if export.Type == models.FunctionObject {
@@ -365,14 +370,14 @@ func (i *repositoryImporter) updateImportSources() error {
 				sourceName := string(rplImport.SourceName)
 
 				lookupSignatures := make([]string, 1)
-				lookupSignatures[0] = sourceName + "_" + rplImport.Name
+				lookupSignatures[0] = sourceName + "_" + rplImport.MangledName
 
 				// most import source names don't contain the .rpl extension
 				// but some do, in which case we create another lookup signature
 				// without the extension
 				baseSourceName := strings.TrimSuffix(sourceName, filepath.Ext(sourceName))
 				if baseSourceName != sourceName {
-					lookupSignatures = append(lookupSignatures, baseSourceName+"_"+rplImport.Name)
+					lookupSignatures = append(lookupSignatures, baseSourceName+"_"+rplImport.MangledName)
 				}
 
 				for _, lookupSignature := range lookupSignatures {

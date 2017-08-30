@@ -1,13 +1,12 @@
 <template>
   <div class="uk-position-relative">
-    <h3>Functions</h3>
+    <h5>Functions</h5>
     <div class="uk-overflow-auto">
       <table class="uk-table">
         <RplImportRow v-for="item in imports.functions" :item="item" :key="item.name" />
       </table>
     </div>
-
-    <h3>Data</h3>
+    <h5>Data</h5>
     <div class="uk-overflow-auto">
       <table class="uk-table">
         <RplImportRow v-for="item in imports.data" :item="item" :key="item.name" />

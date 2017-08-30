@@ -51,7 +51,7 @@ func (r *leveldbRepository) StoreImport(value *models.Import) error {
 	if err := r.db.Put(indexKey, key, nil); err != nil {
 		return err
 	}
-	indexKey = r.makeImportRPLNameKey(value.RPLID, value.SourceName, value.Type, value.Name)
+	indexKey = r.makeImportRPLNameKey(value.RPLID, value.SourceName, value.Type, value.MangledName)
 	return r.db.Put(indexKey, key, nil)
 }
 
@@ -69,7 +69,7 @@ func (r *leveldbRepository) StoreImports(values []*models.Import) error {
 		batch.Put(indexKey, key)
 		indexKey = r.makeImportRPLSourceNameKey(value.RPLID, value.SourceName)
 		batch.Put(indexKey, key)
-		indexKey = r.makeImportRPLNameKey(value.RPLID, value.SourceName, value.Type, value.Name)
+		indexKey = r.makeImportRPLNameKey(value.RPLID, value.SourceName, value.Type, value.MangledName)
 		batch.Put(indexKey, key)
 	}
 	return r.db.Write(batch, nil)
@@ -95,7 +95,7 @@ func (r *leveldbRepository) RemoveImport(id models.ImportID) error {
 	if err := r.db.Delete(key, nil); err != nil {
 		return err
 	}
-	key = r.makeImportRPLNameKey(rplImport.RPLID, rplImport.SourceName, rplImport.Type, rplImport.Name)
+	key = r.makeImportRPLNameKey(rplImport.RPLID, rplImport.SourceName, rplImport.Type, rplImport.MangledName)
 	if err := r.db.Delete(key, nil); err != nil {
 		return err
 	}

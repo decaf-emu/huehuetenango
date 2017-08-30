@@ -59,7 +59,7 @@ func (r *leveldbRepository) StoreExport(value *models.Export) error {
 	if err := r.db.Put(indexKey, key, nil); err != nil {
 		return err
 	}
-	indexKey = r.makeExportRPLNameKey(value.RPLID, value.Type, value.Name)
+	indexKey = r.makeExportRPLNameKey(value.RPLID, value.Type, value.MangledName)
 	if err := r.db.Put(indexKey, key, nil); err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (r *leveldbRepository) StoreExport(value *models.Export) error {
 	if err := r.db.Put(indexKey, key, nil); err != nil {
 		return err
 	}
-	indexKey = r.makeExportTitleNameKey(value.TitleID, value.Type, value.Name)
+	indexKey = r.makeExportTitleNameKey(value.TitleID, value.Type, value.MangledName)
 	return r.db.Put(indexKey, key, nil)
 }
 
@@ -83,11 +83,11 @@ func (r *leveldbRepository) StoreExports(values []*models.Export) error {
 		batch.Put(key, data)
 		indexKey := r.makeExportRPLIDKey(value.RPLID, value.ID)
 		batch.Put(indexKey, key)
-		indexKey = r.makeExportRPLNameKey(value.RPLID, value.Type, value.Name)
+		indexKey = r.makeExportRPLNameKey(value.RPLID, value.Type, value.MangledName)
 		batch.Put(indexKey, key)
 		indexKey = r.makeExportTitleIDKey(value.TitleID, value.ID)
 		batch.Put(indexKey, key)
-		indexKey = r.makeExportTitleNameKey(value.TitleID, value.Type, value.Name)
+		indexKey = r.makeExportTitleNameKey(value.TitleID, value.Type, value.MangledName)
 		batch.Put(indexKey, key)
 	}
 	return r.db.Write(batch, nil)
@@ -112,7 +112,7 @@ func (r *leveldbRepository) RemoveExport(id models.ExportID) error {
 	if err := r.db.Delete(key, nil); err != nil {
 		return err
 	}
-	key = r.makeExportRPLNameKey(rplExport.RPLID, rplExport.Type, rplExport.Name)
+	key = r.makeExportRPLNameKey(rplExport.RPLID, rplExport.Type, rplExport.MangledName)
 	if err := r.db.Delete(key, nil); err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (r *leveldbRepository) RemoveExport(id models.ExportID) error {
 	if err := r.db.Delete(key, nil); err != nil {
 		return err
 	}
-	key = r.makeExportTitleNameKey(rplExport.TitleID, rplExport.Type, rplExport.Name)
+	key = r.makeExportTitleNameKey(rplExport.TitleID, rplExport.Type, rplExport.MangledName)
 	if err := r.db.Delete(key, nil); err != nil {
 		return err
 	}

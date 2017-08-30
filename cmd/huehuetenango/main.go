@@ -29,7 +29,7 @@ func main() {
 	fs := flag.NewFlagSetWithEnvPrefix(os.Args[0], "HUEHUE", flag.ExitOnError)
 	httpAddr := fs.String("http_addr", ":8080", "HTTP listen address")
 	databasePath := fs.String("db_path", "db", "")
-	searchPath := fs.String("search_db_path", "search.bleve", "")
+	searchPath := fs.String("search_db_path", "search", "")
 	githubClientID := fs.String("github_client_id", "", "")
 	githubClientSecret := fs.String("github_client_secret", "", "")
 	jwtSigningSecret := fs.String("jwt_signing_secret", "", "")

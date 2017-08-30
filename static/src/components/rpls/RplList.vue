@@ -1,11 +1,14 @@
 <template>
-  <table class="uk-table uk-table-hover">
-    <tr v-for="rpl in rpls">
-      <td class="uk-table-link">
-        <router-link :to="{ name: 'title', params: { titleId, rplId: rpl.ID, type }}">{{ rpl.Name }}</router-link>
-      </td>
-    </tr>
-  </table>
+  <ul class="uk-nav uk-nav-default">
+    <li class="uk-nav-header">RPX</li>
+    <li v-for="rpl in rpls" :key="rpl.ID" v-if="rpl.IsRPX">
+      <router-link :to="{ name: 'title', params: { titleId, rplId: rpl.ID, type }}">{{ rpl.Name }}</router-link>
+    </li>
+    <li class="uk-nav-header">RPL</li>
+    <li v-for="rpl in rpls" :key="rpl.ID" v-if="!rpl.IsRPX">
+      <router-link :to="{ name: 'title', params: { titleId, rplId: rpl.ID, type }}">{{ rpl.Name }}</router-link>
+    </li>
+  </ul>
 </template>
 
 <script>

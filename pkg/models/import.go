@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"sync"
 
+	ghs "github.com/jackwakefield/ghs-demangle"
 	"github.com/oklog/ulid"
 )
 
@@ -14,6 +15,7 @@ type Import struct {
 	TitleID       TitleID    `storm:"index"`
 	RPLID         RPLID      `storm:"index"`
 	Type          ObjectType `storm:"index"`
+	MangledName   string     `storm:"index"`
 	Name          string     `storm:"index"`
 	SourceName    string     `storm:"index"`
 	SourceID      RPLID      `storm:"index"`
@@ -25,9 +27,14 @@ func NewImport(name string) (*Import, error) {
 	if err != nil {
 		return nil, err
 	}
+	demangledName, err := ghs.Demangle(name)
+	if err != nil {
+		demangledName = name
+	}
 	return &Import{
-		ID:   ImportID(id.String()),
-		Name: name,
+		ID:          ImportID(id.String()),
+		MangledName: name,
+		Name:        demangledName,
 	}, nil
 }
 
@@ -44,7 +51,11 @@ func NewTempImport(name string) (*Import, error) {
 	}
 	value := importPool.Get().(*Import)
 	value.ID = ImportID(id.String())
-	value.Name = name
+	value.MangledName = name
+	value.Name, err = ghs.Demangle(name)
+	if err != nil {
+		value.Name = name
+	}
 	return value, nil
 }
 

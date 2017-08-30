@@ -433,6 +433,8 @@ func easyjsonD2b7633eDecodeGithubComDecafEmuHuehuetenangoPkgModels3(in *jlexer.L
 			out.RPLID = RPLID(in.String())
 		case "Type":
 			out.Type = ObjectType(in.String())
+		case "MangledName":
+			out.MangledName = string(in.String())
 		case "Name":
 			out.Name = string(in.String())
 		case "SourceName":
@@ -479,6 +481,12 @@ func easyjsonD2b7633eEncodeGithubComDecafEmuHuehuetenangoPkgModels3(out *jwriter
 	first = false
 	out.RawString("\"Type\":")
 	out.String(string(in.Type))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"MangledName\":")
+	out.String(string(in.MangledName))
 	if !first {
 		out.RawByte(',')
 	}
@@ -552,10 +560,14 @@ func easyjsonD2b7633eDecodeGithubComDecafEmuHuehuetenangoPkgModels4(in *jlexer.L
 			out.ID = ExportID(in.String())
 		case "TitleID":
 			out.TitleID = TitleID(in.Uint64())
+		case "TitleHexID":
+			out.TitleHexID = string(in.String())
 		case "RPLID":
 			out.RPLID = RPLID(in.String())
 		case "Type":
 			out.Type = ObjectType(in.String())
+		case "MangledName":
+			out.MangledName = string(in.String())
 		case "Name":
 			out.Name = string(in.String())
 		default:
@@ -588,6 +600,12 @@ func easyjsonD2b7633eEncodeGithubComDecafEmuHuehuetenangoPkgModels4(out *jwriter
 		out.RawByte(',')
 	}
 	first = false
+	out.RawString("\"TitleHexID\":")
+	out.String(string(in.TitleHexID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
 	out.RawString("\"RPLID\":")
 	out.String(string(in.RPLID))
 	if !first {
@@ -596,6 +614,12 @@ func easyjsonD2b7633eEncodeGithubComDecafEmuHuehuetenangoPkgModels4(out *jwriter
 	first = false
 	out.RawString("\"Type\":")
 	out.String(string(in.Type))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"MangledName\":")
+	out.String(string(in.MangledName))
 	if !first {
 		out.RawByte(',')
 	}

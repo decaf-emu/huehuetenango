@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-container uk-container-expand uk-position-relative">
+  <div class="uk-margin-top uk-container uk-container-expand uk-position-relative">
     <table class="uk-table uk-table-hover">
       <thead>
         <tr>
@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="title in allTitles">
+        <tr v-for="title in allTitles" :key="title.ID">
           <td class="uk-table-link">
             <router-link :to="{ name: 'title', params: { titleId: title.HexID }}">
               {{ title.LongNameEnglish }}

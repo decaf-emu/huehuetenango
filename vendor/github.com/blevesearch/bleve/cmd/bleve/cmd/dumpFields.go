@@ -1,10 +1,10 @@
-// Copyright © 2016 NAME HERE <EMAIL ADDRESS>
+//  Copyright (c) 2017 Couchbase, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// 		http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/blevesearch/bleve/index/upside_down"
+	"github.com/blevesearch/bleve/index/upsidedown"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +41,7 @@ var dumpFieldsCmd = &cobra.Command{
 			switch rowOrErr := rowOrErr.(type) {
 			case error:
 				return fmt.Errorf("error dumping: %v", rowOrErr)
-			case upside_down.UpsideDownCouchRow:
+			case upsidedown.UpsideDownCouchRow:
 				fmt.Printf("%v\n", rowOrErr)
 				fmt.Printf("Key:   % -100x\nValue: % -100x\n\n", rowOrErr.Key(), rowOrErr.Value())
 			}

@@ -4,24 +4,20 @@ import (
 	"crypto/rand"
 	"sync"
 
+	ghs "github.com/jackwakefield/ghs-demangle"
 	"github.com/oklog/ulid"
 )
 
 type ExportID string
 
 type Export struct {
-	ID      ExportID
-	TitleID TitleID    `storm:"index"`
-	RPLID   RPLID      `storm:"index"`
-	Type    ObjectType `storm:"index"`
-	Name    string     `storm:"index"`
-}
-
-func (d *Export) Copy(s *Export) {
-	d.TitleID = s.TitleID
-	d.RPLID = s.RPLID
-	d.Type = s.Type
-	d.Name = s.Name
+	ID          ExportID
+	TitleID     TitleID `storm:"index"`
+	TitleHexID  string
+	RPLID       RPLID      `storm:"index"`
+	Type        ObjectType `storm:"index"`
+	MangledName string     `storm:"index"`
+	Name        string
 }
 
 func NewExport(name string) (*Export, error) {
@@ -29,9 +25,14 @@ func NewExport(name string) (*Export, error) {
 	if err != nil {
 		return nil, err
 	}
+	demangledName, err := ghs.Demangle(name)
+	if err != nil {
+		demangledName = name
+	}
 	return &Export{
-		ID:   ExportID(id.String()),
-		Name: name,
+		ID:          ExportID(id.String()),
+		MangledName: name,
+		Name:        demangledName,
 	}, nil
 }
 
@@ -48,7 +49,11 @@ func NewTempExport(name string) (*Export, error) {
 	}
 	value := exportPool.Get().(*Export)
 	value.ID = ExportID(id.String())
-	value.Name = name
+	value.MangledName = name
+	value.Name, err = ghs.Demangle(name)
+	if err != nil {
+		value.Name = name
+	}
 	return value, nil
 }
 

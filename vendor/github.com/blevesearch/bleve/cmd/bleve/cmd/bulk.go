@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// 		http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,6 +31,9 @@ var bulkCmd = &cobra.Command{
 	Use:   "bulk [index path] [data paths ...]",
 	Short: "bulk loads from newline delimited JSON files",
 	Long:  `The bulk command will perform batch loading of documents in one or more newline delimited JSON files.`,
+	Annotations: map[string]string{
+		canMutateBleveIndex: "true",
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 2 {
 			return fmt.Errorf("must specify at least one path")

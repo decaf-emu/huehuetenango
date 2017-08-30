@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// 		http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@ import (
 var mappingCmd = &cobra.Command{
 	Use:   "mapping [index path]",
 	Short: "prints the mapping used for this index",
-	Long:  `The mapping command prints a JSON represenation of the mapping used for this index.`,
+	Long:  `The mapping command prints a JSON representation of the mapping used for this index.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		mapping := idx.Mapping()
 		jsonBytes, err := json.MarshalIndent(mapping, "", "  ")

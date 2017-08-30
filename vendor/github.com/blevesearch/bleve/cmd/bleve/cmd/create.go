@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// 		http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ import (
 	"io/ioutil"
 
 	"github.com/blevesearch/bleve"
+	"github.com/blevesearch/bleve/mapping"
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +31,9 @@ var createCmd = &cobra.Command{
 	Use:   "create [index path]",
 	Short: "creates a new index",
 	Long:  `The create command will create a new empty index.`,
+	Annotations: map[string]string{
+		canMutateBleveIndex: "true",
+	},
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// override RootCmd version which opens existing index
 		if len(args) < 1 {
@@ -38,7 +42,7 @@ var createCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var mapping *bleve.IndexMapping
+		var mapping mapping.IndexMapping
 		var err error
 		mapping, err = buildMapping()
 		if err != nil {
@@ -53,8 +57,8 @@ var createCmd = &cobra.Command{
 	},
 }
 
-func buildMapping() (*bleve.IndexMapping, error) {
-	mapping := bleve.NewIndexMapping()
+func buildMapping() (mapping.IndexMapping, error) {
+	mapping := mapping.NewIndexMapping()
 	if mappingPath != "" {
 		mappingBytes, err := ioutil.ReadFile(mappingPath)
 		if err != nil {
@@ -71,7 +75,7 @@ func buildMapping() (*bleve.IndexMapping, error) {
 func init() {
 	RootCmd.AddCommand(createCmd)
 
-	createCmd.Flags().StringVarP(&mappingPath, "mapping", "m", "", "Path to a file containing a JSON represenation of an index mapping to use.")
+	createCmd.Flags().StringVarP(&mappingPath, "mapping", "m", "", "Path to a file containing a JSON representation of an index mapping to use.")
 	createCmd.Flags().StringVarP(&storeType, "store", "s", bleve.Config.DefaultKVStore, "The bleve storage type to use.")
 	createCmd.Flags().StringVarP(&indexType, "index", "i", bleve.Config.DefaultIndexType, "The bleve index type to use.")
 }
