@@ -1,7 +1,7 @@
 <template>
   <div class="uk-background-muted uk-position-cover uk-width-1-1"
     uk-height-viewport="expand: true"
-    v-show="searchTerm && searchTerm.length > 1"
+    v-show="searchTerm && searchTerm.length > 2"
   >
     <div class="uk-padding uk-margin-large-top uk-grid-divider uk-child-width-1-1 uk-grid-stack uk-overflow-auto" uk-grid>
       <div class="uk-grid-margin uk-first-column">
@@ -10,7 +10,7 @@
           <tbody>
             <tr v-for="title in titleSearchResults" :key="title.ID">
               <td class="uk-table-expand uk-table-link">
-                <router-link :to="{ name: 'title', params: { titleId: title.HexID }}">
+                <router-link :to="{ name: 'title', params: { titleId: title.HexID }}" @click.native="clearSearch">
                   {{ title.LongNameEnglish }}
                 </router-link>
               </td>
@@ -25,7 +25,7 @@
           <tbody>
             <tr v-for="item in functionSearchResults" :key="item.ID">
               <td class="uk-table-expand uk-table-link">
-                <router-link :to="{ name: 'title', params: { titleId: item.TitleHexID, rplId: item.RPLID, type: 'exports' }}">
+                <router-link :to="{ name: 'title', params: { titleId: item.TitleHexID, rplId: item.RPLID, type: 'exports' }}" @click.native="clearSearch">
                   {{ item.Name }}
                 </router-link>
               </td>
@@ -39,7 +39,7 @@
           <tbody>
             <tr v-for="item in dataSearchResults" :key="item.ID">
               <td class="uk-table-expand uk-table-link">
-                <router-link :to="{ name: 'title', params: { titleId: item.TitleHexID, rplId: item.RPLID, type: 'exports' }}">
+                <router-link :to="{ name: 'title', params: { titleId: item.TitleHexID, rplId: item.RPLID, type: 'exports' }}" @click.native="clearSearch">
                   {{ item.Name }}
                 </router-link>
               </td>
@@ -62,6 +62,11 @@ export default {
       'dataSearchResults',
       'functionSearchResults',
     ]),
+  },
+  methods: {
+    clearSearch() {
+      this.$store.dispatch('clearSearch');
+    },
   },
 };
 </script>

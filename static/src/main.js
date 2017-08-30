@@ -36,13 +36,6 @@ const router = new VueRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  store.dispatch('clearSearch');
-
-  next();
-});
-
-
 new Vue({
   router,
   store,
