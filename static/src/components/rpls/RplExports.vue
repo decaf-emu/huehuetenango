@@ -1,6 +1,6 @@
 <template>
   <div class="uk-overflow-auto uk-padding-small uk-padding-remove-horizontal">
-    <table class="uk-table uk-table-striped uk-table-small" v-if="exports.functions && exports.functions.length">
+    <table class="uk-table uk-table-striped uk-table-small" v-if="functions && functions.length">
       <caption>Functions</caption>
       <thead>
         <tr>
@@ -8,7 +8,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in exports.functions" :key="item.name">
+        <tr v-for="item in functions" :key="item">
           <td>
             <code>
               {{ item }}
@@ -17,7 +17,7 @@
         </tr>
       </tbody>
     </table>
-    <table class="uk-table uk-table-striped uk-table-small" v-if="exports.data && exports.data.length">
+    <table class="uk-table uk-table-striped uk-table-small" v-if="data && data.length">
       <caption>Data</caption>
       <thead>
         <tr>
@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in exports.data" :key="item.name">
+        <tr v-for="item in data" :key="item">
           <td>
             <code>
               {{ item }}
@@ -43,6 +43,20 @@ import { mapGetters } from 'vuex';
 export default {
   computed: {
     ...mapGetters(['exports']),
+  	functions() {
+      if (!this.exports || !this.exports.functions) {
+        return [];
+      }
+
+    	return this.exports.functions.map(item => Object.freeze(item));
+    },
+  	data() {
+      if (!this.exports || !this.exports.data) {
+        return [];
+      }
+
+    	return this.exports.data.map(item => Object.freeze(item));
+    },
   },
 };
 </script>
