@@ -34,20 +34,20 @@ import RplImportRow from './RplImportRow.vue';
 export default {
   components: { RplImportRow },
   computed: {
-    ...mapGetters(['imports']),
-  	functions() {
-      if (!this.imports || !this.imports.functions) {
-        return [];
-      }
-
-    	return this.imports.functions.map(item => Object.freeze(item));
-    },
+    ...mapGetters(['importData', 'importFunctions']),
   	data() {
-      if (!this.imports || !this.imports.data) {
+      if (!this.importData) {
         return [];
       }
 
-    	return this.imports.data.map(item => Object.freeze(item));
+    	return this.importData.map(item => Object.freeze(item));
+    },
+  	functions() {
+      if (!this.importFunctions) {
+        return [];
+      }
+
+    	return this.importFunctions.map(item => Object.freeze(item));
     },
   },
 };

@@ -42,20 +42,20 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters(['exports']),
-  	functions() {
-      if (!this.exports || !this.exports.functions) {
-        return [];
-      }
-
-    	return this.exports.functions.map(item => Object.freeze(item));
-    },
+    ...mapGetters(['exportData', 'exportFunctions']),
   	data() {
-      if (!this.exports || !this.exports.data) {
+      if (!this.exportData) {
         return [];
       }
 
-    	return this.exports.data.map(item => Object.freeze(item));
+    	return this.exportData.map(item => Object.freeze(item));
+    },
+  	functions() {
+      if (!this.exportFunctions) {
+        return [];
+      }
+
+    	return this.exportFunctions.map(item => Object.freeze(item));
     },
   },
 };

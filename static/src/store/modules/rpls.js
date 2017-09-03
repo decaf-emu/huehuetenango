@@ -2,6 +2,7 @@ import * as types from '../mutation-types';
 import rpls from '../../api/rpls';
 import imports from '../../api/imports';
 import exports from '../../api/exports';
+import sortBy from 'lodash-es/sortBy';
 
 export default {
   state: {
@@ -9,8 +10,10 @@ export default {
     loadingTitleRpls: false,
 
     rpl: null,
-    imports: [],
-    exports: [],
+    importData: [],
+    importFunctions: [],
+    exportData: [],
+    exportFunctions: [],
     loadingRpl: false,
   },
 
@@ -19,8 +22,10 @@ export default {
     loadingTitleRpls: state => state.loadingTitleRpls,
 
     rpl: state => state.rpl,
-    imports: state => state.imports,
-    exports: state => state.exports,
+    importData: state => state.importData,
+    importFunctions: state => state.importFunctions,
+    exportData: state => state.exportData,
+    exportFunctions: state => state.exportFunctions,
     loadingRpl: state => state.loadingRpl,
   },
 
@@ -77,24 +82,7 @@ export default {
     },
 
     [types.TITLE_RPLS_SUCCESS](state, { rpls }) {
-      state.titleRpls = rpls.sort((a, b) => {
-        if (a.IsRPX) {
-          return -1;
-        }
-
-        const nameA = a.Name.toUpperCase();
-        const nameB = b.Name.toUpperCase();
-
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-
-        return 0;
-      });
-
+      state.titleRpls = sortBy(rpls, title => title.Name.toUpperCase());
       state.loadingTitleRpls = false;
     },
 
@@ -113,8 +101,31 @@ export default {
 
     [types.GET_RPL_SUCCESS](state, { rpl, imports, exports }) {
       state.rpl = rpl;
-      state.imports = imports;
-      state.exports = exports;
+
+      if (imports && imports.data) {
+        state.importData = sortBy(imports.data || [], item => item.name.toUpperCase());
+      } else {
+        state.importData = [];
+      }
+
+      if (imports && imports.functions) {
+        state.importFunctions = sortBy(imports.functions || [], item => item.name.toUpperCase());
+      } else {
+        state.importFunctions = [];
+      }
+
+      if (exports && exports.data) {
+        state.exportData = sortBy(exports.data || [], item => item.toUpperCase());
+      } else {
+        state.exportData = [];
+      }
+
+      if (exports && exports.functions) {
+        state.exportFunctions = sortBy(exports.functions || [], item => item.toUpperCase());
+      } else {
+        state.exportFunctions = [];
+      }
+
       state.loadingRpl = false;
     },
 
@@ -124,8 +135,10 @@ export default {
 
     [types.CLEAR_RPL](state) {
       state.rpl = null;
-      state.imports = [];
-      state.exports = [];
+      state.importData = [];
+      state.importFunctions = [];
+      state.exportData = [];
+      state.exportFunctions = [];
       state.loadingRpl = false;
     },
   },
