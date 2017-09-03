@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/decaf-emu/huehuetenango/pkg/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 
 	"github.com/labstack/echo"
 )

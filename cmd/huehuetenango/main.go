@@ -14,8 +14,8 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/decaf-emu/huehuetenango/pkg/api"
-	"github.com/decaf-emu/huehuetenango/pkg/repository"
-	"github.com/decaf-emu/huehuetenango/pkg/search"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/repository"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/search"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"

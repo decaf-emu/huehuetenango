@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/decaf-emu/huehuetenango/pkg/repository"
-	"github.com/decaf-emu/huehuetenango/pkg/search"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/repository"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/search"
 	"github.com/labstack/echo"
 	"golang.org/x/oauth2"
 )

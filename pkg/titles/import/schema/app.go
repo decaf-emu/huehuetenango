@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"strings"
 
-	"github.com/decaf-emu/huehuetenango/pkg/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 )
 
 type App struct {

@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/decaf-emu/huehuetenango/pkg/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 	"github.com/labstack/echo"
 )
 

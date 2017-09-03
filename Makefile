@@ -6,8 +6,8 @@ deps:
 	$(MAKE) -C static deps
 
 generate:
-	easyjson -all -pkg pkg/models
-	easyjson -all -pkg pkg/importer/schema
+	easyjson -all -pkg pkg/titles/models
+	easyjson -all -pkg pkg/titles/import/schema
 
 build:
 	go build -v -o huehuetenango ./cmd/huehuetenango

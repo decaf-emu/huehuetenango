@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/decaf-emu/huehuetenango/pkg/importer"
-	"github.com/decaf-emu/huehuetenango/pkg/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/import"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 	"github.com/labstack/echo"
 )
 

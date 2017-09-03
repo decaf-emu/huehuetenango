@@ -1,14 +1,14 @@
 package importer
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/decaf-emu/huehuetenango/pkg/importer/schema"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema"
+	"github.com/mailru/easyjson"
 )
 
 type Title struct {
@@ -135,7 +135,7 @@ func (s *source) Titles() ([]*Title, error) {
 			rpl := &schema.RPL{
 				Name: name,
 			}
-			if err = json.Unmarshal(data, rpl); err != nil {
+			if err = easyjson.Unmarshal(data, rpl); err != nil {
 				return nil, err
 			}
 			title.RPLs = append(title.RPLs, rpl)

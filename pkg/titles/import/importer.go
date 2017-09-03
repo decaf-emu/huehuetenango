@@ -5,10 +5,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/decaf-emu/huehuetenango/pkg/importer/schema"
-	"github.com/decaf-emu/huehuetenango/pkg/models"
-	"github.com/decaf-emu/huehuetenango/pkg/repository"
-	"github.com/decaf-emu/huehuetenango/pkg/search"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/repository"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/search"
 	"github.com/oklog/ulid"
 )
 

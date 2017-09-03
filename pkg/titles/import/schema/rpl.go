@@ -3,7 +3,7 @@ package schema
 import (
 	"path/filepath"
 
-	"github.com/decaf-emu/huehuetenango/pkg/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 )
 
 type Exports struct {

@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/decaf-emu/huehuetenango/pkg/models"
+import "github.com/decaf-emu/huehuetenango/pkg/titles/models"
 
 type Repository interface {
 	Close() error

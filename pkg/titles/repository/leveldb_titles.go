@@ -7,7 +7,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 
-	"github.com/decaf-emu/huehuetenango/pkg/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 )
 
 func makeTitleKey(id models.TitleID) []byte {

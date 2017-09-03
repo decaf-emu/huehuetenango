@@ -1,6 +1,6 @@
 package search
 
-import "github.com/decaf-emu/huehuetenango/pkg/models"
+import "github.com/decaf-emu/huehuetenango/pkg/titles/models"
 
 type Index interface {
 	Close() error

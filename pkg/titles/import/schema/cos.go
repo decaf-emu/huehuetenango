@@ -1,6 +1,6 @@
 package schema
 
-import "github.com/decaf-emu/huehuetenango/pkg/models"
+import "github.com/decaf-emu/huehuetenango/pkg/titles/models"
 
 type COS struct {
 	ArgString          string      `xml:"argstr"`

@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/decaf-emu/huehuetenango/pkg/models"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 
 	"github.com/blevesearch/bleve"
 	"github.com/blevesearch/bleve/analysis/analyzer/custom"
