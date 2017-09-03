@@ -1,6 +1,6 @@
 <template>
   <div class="uk-margin-top uk-container uk-container-expand uk-position-relative">
-    <table class="uk-table uk-table-hover">
+    <table class="uk-table uk-table-striped uk-table-hover uk-table-small">
       <thead>
         <tr>
           <th class="uk-table-expand">Name</th>
