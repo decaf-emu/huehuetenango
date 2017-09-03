@@ -2,11 +2,11 @@
   <tr>
     <td class="uk-table-expand uk-table-link" v-if="item.source_title_id && item.source_id">
       <router-link class="uk-link-reset" :to="{ name: 'title', params: { titleId: item.source_title_id, rplId: item.source_id, type: 'exports' }}">
-        <code>{{ item.name }}</code>
+        <highlight-code lang="cpp" inline>{{ item.name }}</highlight-code>
       </router-link>
     </td>
     <td class="uk-table-expand" v-if="!item.source_title_id || !item.source_id">
-      <code>{{ item.name }}</code>
+      <highlight-code lang="cpp" inline>{{ item.name }}</highlight-code>
     </td>
 
     <td class="uk-table-shrink uk-table-link uk-text-right" v-if="item.source_title_id && item.source_id">

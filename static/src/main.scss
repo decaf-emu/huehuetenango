@@ -1,3 +1,9 @@
 @import "~uikit/src/scss/variables-theme.scss";
 @import "~uikit/src/scss/mixins-theme.scss";
 @import "~uikit/src/scss/uikit-theme.scss";
+@import "~highlight.js/styles/default.css";
+@import "~pace/themes/blue/pace-theme-flash.css";
+
+.hljs {
+  background: none;
+}

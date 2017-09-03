@@ -10,9 +10,7 @@
       <tbody>
         <tr v-for="item in functions" :key="item">
           <td>
-            <code>
-              {{ item }}
-            </code>
+            <highlight-code lang="cpp" inline>{{ item }}</highlight-code>
           </td>
         </tr>
       </tbody>
@@ -27,9 +25,7 @@
       <tbody>
         <tr v-for="item in data" :key="item">
           <td>
-            <code>
-              {{ item }}
-            </code>
+            <highlight-code lang="cpp" inline>{{ item }}</highlight-code>
           </td>
         </tr>
       </tbody>

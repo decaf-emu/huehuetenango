@@ -9,7 +9,6 @@ import AuthLogout from './components/auth/AuthLogout.vue';
 import TitleList from './components/titles/TitleList.vue';
 import TitleView from './components/titles/TitleView.vue';
 import Import from './components/import/Import.vue';
-import 'pace/themes/blue/pace-theme-flash.css';
 import './main.scss';
 
 pace.start();
