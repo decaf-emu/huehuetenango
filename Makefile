@@ -1,13 +1,8 @@
-.PHONY: deps generate build run
-default: deps generate build
+.PHONY: deps build run
+default: deps build
 
 deps:
-	go get -u github.com/mailru/easyjson/...
 	$(MAKE) -C static deps
-
-generate:
-	easyjson -all -pkg pkg/titles/models
-	easyjson -all -pkg pkg/titles/import/schema
 
 build:
 	go build -v -o huehuetenango ./cmd/huehuetenango
