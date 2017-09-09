@@ -10,7 +10,6 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/nightlyone/lockfile"
 	"golang.org/x/oauth2"
 
 	"github.com/decaf-emu/huehuetenango/pkg/api"
@@ -45,32 +44,6 @@ func main() {
 			}).Fatal("failed to create database directory")
 		}
 	}
-
-	lockPath := filepath.Join(databaseDir, "lock")
-	lock, err := lockfile.New(lockPath)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"path": lockPath,
-			"err":  err.Error(),
-		}).Fatal("failed to create lock file")
-	}
-
-	for {
-		err = lock.TryLock()
-
-		if err == lockfile.ErrBusy || err == lockfile.ErrNotExist || err == lockfile.ErrInvalidPid {
-			time.Sleep(500 * time.Second)
-		} else if err != nil && err != lockfile.ErrDeadOwner {
-			log.WithFields(log.Fields{
-				"path": lockPath,
-				"err":  err.Error(),
-			}).Fatal("failed to obtain database file lock")
-		} else {
-			break
-		}
-	}
-
-	defer lock.Unlock()
 
 	repository, err := repository.NewLevelDBRepository(databaseDir)
 	if err != nil {
