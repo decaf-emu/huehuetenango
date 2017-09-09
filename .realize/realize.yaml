@@ -11,23 +11,22 @@ settings:
 projects:
 - name: huehuetenango
   path: cmd/huehuetenango
-  fmt: true
-  generate: false
-  test: false
-  bin: true
-  build: false
-  run: true
+  commands:
+    vet: false
+    fmt: false
+    test: false
+    generate: false
+    bin:
+      status: true
+    build:
+      status: true
+    run: true
   watcher:
     preview: false
     paths:
-    - .
+    - main.go
     - ../../pkg
-    ignore_paths:
     - ../../vendor
+    ignore_paths: []
     exts:
     - .go
-  streams:
-    cli_out: true
-    file_out: false
-    file_log: false
-    file_err: false
