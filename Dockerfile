@@ -57,9 +57,8 @@ COPY --from=builder /root/go/src/github.com/decaf-emu/huehuetenango/huehuetenang
 COPY --from=builder /root/go/src/github.com/decaf-emu/huehuetenango/static/dist /opt/huehuetenango/static
 RUN chown -R huehuetenango:huehuetenango $OUTPUT_DIR
 
-# install and configure supervisor
 RUN apt-get update && \
-  apt-get install -y supervisor
+  apt-get install -y ca-certificates supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 USER huehuetenango
