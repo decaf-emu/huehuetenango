@@ -1,14 +1,6 @@
 hash: a1dabd5e7e3e5346ec30e26e4d611ad2402fbdc12c0d1dbde4f358111f727e11
-updated: 2017-08-30T21:45:10.72828547+01:00
+updated: 2017-09-09T16:05:35.425658095+01:00
 imports:
-- name: github.com/asdine/storm
-  version: 2da548c16156b3197728372bff5614033084aff5
-  subpackages:
-  - codec
-  - codec/json
-  - index
-  - internal
-  - q
 - name: github.com/blevesearch/bleve
   version: 930c06dfecb08a73a4411e18a3f50ebe84264ade
   subpackages:
@@ -52,7 +44,8 @@ imports:
   version: db70c57796cc8c310613541dfade3dce627d09c7
   repo: https://github.com/blevesearch/segment
 - name: github.com/boltdb/bolt
-  version: 2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8
+  version: 144418e1475d8bf7abbdc48583500f1a20c62ea7
+  repo: https://github.com/boltdb/bolt
 - name: github.com/dgrijalva/jwt-go
   version: a539ee1a749a2b895533f979515ac7e6e0f5b650
 - name: github.com/emirpasic/gods
