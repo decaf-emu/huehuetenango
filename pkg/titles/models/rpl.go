@@ -11,7 +11,7 @@ const (
 
 type RPL struct {
 	ID      RPLID
-	Name    string `storm:"index"`
+	Name    string
 	IsRPX   bool
-	TitleID TitleID `storm:"index"`
+	TitleID TitleID
 }

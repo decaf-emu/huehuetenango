@@ -12,11 +12,11 @@ type ExportID string
 
 type Export struct {
 	ID          ExportID
-	TitleID     TitleID `storm:"index"`
+	TitleID     TitleID
 	TitleHexID  string
-	RPLID       RPLID      `storm:"index"`
-	Type        ObjectType `storm:"index"`
-	MangledName string     `storm:"index"`
+	RPLID       RPLID
+	Type        ObjectType
+	MangledName string
 	Name        string
 }
 

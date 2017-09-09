@@ -12,13 +12,13 @@ type ImportID string
 
 type Import struct {
 	ID            ImportID
-	TitleID       TitleID    `storm:"index"`
-	RPLID         RPLID      `storm:"index"`
-	Type          ObjectType `storm:"index"`
-	MangledName   string     `storm:"index"`
-	Name          string     `storm:"index"`
-	SourceName    string     `storm:"index"`
-	SourceID      RPLID      `storm:"index"`
+	TitleID       TitleID
+	RPLID         RPLID
+	Type          ObjectType
+	MangledName   string
+	Name          string
+	SourceName    string
+	SourceID      RPLID
 	SourceTitleID TitleID
 }
 
