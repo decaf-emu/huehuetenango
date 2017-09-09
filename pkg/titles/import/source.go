@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema"
-	"github.com/mailru/easyjson"
+	jsoniter "github.com/json-iterator/go"
 )
 
 type Title struct {
@@ -135,7 +135,7 @@ func (s *source) Titles() ([]*Title, error) {
 			rpl := &schema.RPL{
 				Name: name,
 			}
-			if err = easyjson.Unmarshal(data, rpl); err != nil {
+			if err = jsoniter.Unmarshal(data, rpl); err != nil {
 				return nil, err
 			}
 			title.RPLs = append(title.RPLs, rpl)

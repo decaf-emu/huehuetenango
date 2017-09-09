@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	"github.com/mailru/easyjson"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 
@@ -19,7 +19,7 @@ func makeTitleHexIDKey(hexID string) []byte {
 }
 
 func (r *leveldbRepository) StoreTitle(value *models.Title) error {
-	data, err := easyjson.Marshal(value)
+	data, err := jsoniter.Marshal(value)
 	if err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func (r *leveldbRepository) getTitleByKey(key []byte) (*models.Title, error) {
 		return nil, err
 	}
 	title := &models.Title{}
-	if err := easyjson.Unmarshal(data, title); err != nil {
+	if err := jsoniter.Unmarshal(data, title); err != nil {
 		return nil, err
 	}
 	return title, nil
@@ -71,7 +71,7 @@ func (r *leveldbRepository) ListTitles() ([]*models.Title, error) {
 	}, nil)
 	for iter.Next() {
 		title := &models.Title{}
-		if err := easyjson.Unmarshal(iter.Value(), title); err != nil {
+		if err := jsoniter.Unmarshal(iter.Value(), title); err != nil {
 			return nil, err
 		}
 		results = append(results, title)

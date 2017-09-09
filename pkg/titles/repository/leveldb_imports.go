@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
-	"github.com/mailru/easyjson"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
@@ -34,7 +34,7 @@ func (r *leveldbRepository) makeImportRPLNameKey(rplID models.RPLID, sourceName 
 }
 
 func (r *leveldbRepository) StoreImport(value *models.Import) error {
-	data, err := easyjson.Marshal(value)
+	data, err := jsoniter.Marshal(value)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (r *leveldbRepository) StoreImport(value *models.Import) error {
 func (r *leveldbRepository) StoreImports(values []*models.Import) error {
 	batch := new(leveldb.Batch)
 	for _, value := range values {
-		data, err := easyjson.Marshal(value)
+		data, err := jsoniter.Marshal(value)
 		if err != nil {
 			return err
 		}
@@ -111,7 +111,7 @@ func (r *leveldbRepository) getImportByKey(key []byte) (*models.Import, error) {
 		return nil, err
 	}
 	rpl := &models.Import{}
-	if err := easyjson.Unmarshal(data, rpl); err != nil {
+	if err := jsoniter.Unmarshal(data, rpl); err != nil {
 		return nil, err
 	}
 	return rpl, nil

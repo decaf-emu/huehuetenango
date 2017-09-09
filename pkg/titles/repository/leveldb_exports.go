@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
-	"github.com/mailru/easyjson"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
@@ -46,7 +46,7 @@ func (r *leveldbRepository) makeExportTitleNameKey(titleID models.TitleID, expor
 }
 
 func (r *leveldbRepository) StoreExport(value *models.Export) error {
-	data, err := easyjson.Marshal(value)
+	data, err := jsoniter.Marshal(value)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func (r *leveldbRepository) StoreExport(value *models.Export) error {
 func (r *leveldbRepository) StoreExports(values []*models.Export) error {
 	batch := new(leveldb.Batch)
 	for _, value := range values {
-		data, err := easyjson.Marshal(value)
+		data, err := jsoniter.Marshal(value)
 		if err != nil {
 			return err
 		}
@@ -136,7 +136,7 @@ func (r *leveldbRepository) getExportByKey(key []byte) (*models.Export, error) {
 		return nil, err
 	}
 	rpl := &models.Export{}
-	if err := easyjson.Unmarshal(data, rpl); err != nil {
+	if err := jsoniter.Unmarshal(data, rpl); err != nil {
 		return nil, err
 	}
 	return rpl, nil

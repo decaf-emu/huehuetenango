@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
-	"github.com/mailru/easyjson"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
@@ -22,7 +22,7 @@ func (r *leveldbRepository) makeRPLTitleNameKey(titleID models.TitleID, name str
 }
 
 func (r *leveldbRepository) StoreRPL(value *models.RPL) error {
-	data, err := easyjson.Marshal(value)
+	data, err := jsoniter.Marshal(value)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (r *leveldbRepository) getRPLByKey(key []byte) (*models.RPL, error) {
 		return nil, err
 	}
 	rpl := &models.RPL{}
-	if err := easyjson.Unmarshal(data, rpl); err != nil {
+	if err := jsoniter.Unmarshal(data, rpl); err != nil {
 		return nil, err
 	}
 	return rpl, nil
