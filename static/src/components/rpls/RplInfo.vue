@@ -1,6 +1,6 @@
 <template>
-  <div class="uk-overflow-auto uk-padding-small uk-padding-remove-horizontal">
-    <table class="uk-table uk-table-striped uk-table-small" v-if="rpl">
+  <div v-if="rpl && rpl.FileInfo" class="uk-overflow-auto uk-padding-small uk-padding-remove-horizontal">
+    <table class="uk-table uk-table-striped uk-table-small">
       <caption>Build Info</caption>
       <thead>
         <tr>
@@ -16,7 +16,7 @@
       </tbody>
     </table>
 
-    <table class="uk-table uk-table-striped uk-table-small" v-if="rpl && rpl.FileInfo.Tags.length">
+    <table class="uk-table uk-table-striped uk-table-small" v-if="rpl.FileInfo.Tags.length">
       <caption>Tags</caption>
       <thead>
         <tr>
@@ -32,7 +32,7 @@
       </tbody>
     </table>
 
-    <table class="uk-table uk-table-striped uk-table-small" v-if="rpl">
+    <table class="uk-table uk-table-striped uk-table-small">
       <caption>Load Info</caption>
       <thead>
         <tr>
