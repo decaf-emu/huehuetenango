@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema/rpl"
 	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 	"github.com/decaf-emu/huehuetenango/pkg/titles/repository"
 	"github.com/decaf-emu/huehuetenango/pkg/titles/search"
@@ -149,7 +150,7 @@ func (i *repositoryImporter) importRPL(title *models.Title, sourceRPL *schema.RP
 }
 
 func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.RPL,
-	sourceExports *schema.Exports) error {
+	sourceExports *rpl.ExternalModule) error {
 	if sourceExports == nil {
 		existingExports, err := i.repository.ListExportsByRPL(rpl.ID)
 		if err != nil {
@@ -234,7 +235,7 @@ func (i *repositoryImporter) importRPLExports(title *models.Title, rpl *models.R
 }
 
 func (i *repositoryImporter) importRPLImports(title *models.Title, rpl *models.RPL,
-	sourceImports []*schema.Imports) error {
+	sourceImports []*rpl.ExternalModule) error {
 
 	for _, sourceImport := range sourceImports {
 		dataMap := make(map[string]bool, len(sourceImport.Data))
