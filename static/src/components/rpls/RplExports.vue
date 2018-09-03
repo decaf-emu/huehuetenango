@@ -39,19 +39,19 @@ import { mapGetters } from 'vuex';
 export default {
   computed: {
     ...mapGetters(['exportData', 'exportFunctions']),
-  	data() {
+    data() {
       if (!this.exportData) {
         return [];
       }
 
-    	return this.exportData.map(item => Object.freeze(item));
+      return this.exportData.map(item => Object.freeze(item));
     },
-  	functions() {
+    functions() {
       if (!this.exportFunctions) {
         return [];
       }
 
-    	return this.exportFunctions.map(item => Object.freeze(item));
+      return this.exportFunctions.map(item => Object.freeze(item));
     },
   },
 };
