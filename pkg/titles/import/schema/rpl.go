@@ -19,4 +19,5 @@ type RPL struct {
 func (r *RPL) FillModel(rpl *models.RPL) {
 	rpl.Name = r.Name
 	rpl.IsRPX = (r.FileInfo.Flags&2 != 0)
+	rpl.FileInfo = r.FileInfo
 }
