@@ -1,7 +1,7 @@
 <template>
   <div>
     <div uk-height-viewport class="uk-panel uk-panel-scrollable uk-width-1-4@m uk-position-fixed uk-padding-small">
-      <h3 v-if="title">{{ title.LongNameEnglish }}</h3>
+      <h3 v-if="title">{{ title.LongNameEnglish }} ({{ title.ProductCode }})</h3>
       <RplList v-if="titleId" :loading="loadingTitleRpls" :titleId="titleId" :rpls="titleRpls" :type="type" />
     </div>
     <div uk-grid>
