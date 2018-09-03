@@ -1,37 +1,22 @@
 package schema
 
 import (
-	"path/filepath"
+	"debug/elf"
 
+	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema/rpl"
 	"github.com/decaf-emu/huehuetenango/pkg/titles/models"
 )
 
-type Exports struct {
-	Data      []string `json:"data"`
-	Functions []string `json:"functions"`
-}
-
-type Imports struct {
-	Name      string   `json:"name"`
-	Data      []string `json:"data"`
-	Functions []string `json:"functions"`
-}
-
 type RPL struct {
-	Name     string     `json:"-"`
-	Exports  *Exports   `json:"exports"`
-	Imports  []*Imports `json:"imports"`
-	FileInfo struct {
-		Filename string `json:"filename"`
-	} `json:"fileinfo"`
+	Name     string
+	File     rpl.File
+	FileInfo rpl.FileInfo
+	Exports  *rpl.ExternalModule
+	Imports  []*rpl.ExternalModule
+	Symbols  []elf.Symbol
 }
 
 func (r *RPL) FillModel(rpl *models.RPL) {
 	rpl.Name = r.Name
-
-	if filepath.Ext(r.FileInfo.Filename) == ".rpx" {
-		rpl.IsRPX = true
-	} else {
-		rpl.IsRPX = false
-	}
+	rpl.IsRPX = (r.FileInfo.Flags&2 != 0)
 }

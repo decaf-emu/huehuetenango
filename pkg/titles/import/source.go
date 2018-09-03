@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema"
-	jsoniter "github.com/json-iterator/go"
+	"github.com/decaf-emu/huehuetenango/pkg/titles/import/schema/rpl"
 )
 
 type Title struct {
@@ -68,7 +68,7 @@ func (s *source) Open() error {
 				case "cos.xml":
 					entry.COSPath = path
 				default:
-					if filepath.Ext(path) == ".txt" {
+					if filepath.Ext(path) == ".rpl" || filepath.Ext(path) == ".rpx" {
 						entry.RPLPaths = append(entry.RPLPaths, path)
 					}
 				}
@@ -125,7 +125,7 @@ func (s *source) Titles() ([]*Title, error) {
 		}
 
 		for _, rplPath := range entry.RPLPaths {
-			data, err := ioutil.ReadFile(rplPath)
+			rplFile, err := rpl.Open(rplPath)
 			if err != nil {
 				return nil, err
 			}
@@ -135,9 +135,21 @@ func (s *source) Titles() ([]*Title, error) {
 			rpl := &schema.RPL{
 				Name: name,
 			}
-			if err = jsoniter.Unmarshal(data, rpl); err != nil {
+			rpl.FileInfo, err = rplFile.GetFileInfo()
+			if err != nil {
 				return nil, err
 			}
+
+			rpl.Imports, err = rplFile.ImportModules()
+			if err != nil {
+				return nil, err
+			}
+
+			rpl.Exports, err = rplFile.ExportModule()
+			if err != nil {
+				return nil, err
+			}
+
 			title.RPLs = append(title.RPLs, rpl)
 		}
 
